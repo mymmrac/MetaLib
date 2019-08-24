@@ -1,35 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="google-signin-client_id"
-          content="318274972846-q5qllaspjo6nptvddav5p7ipbigjlli3.apps.googleusercontent.com">
-    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
-    <link rel="shortcut icon" href="/static/img/MetaLib.png" type="image/x-icon">
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="shortcut icon" href="/static/img/MetaLib.png" type="image/x-icon">
+    <meta name="theme-color" content="#333333">
+
     <script src="/static/libs/jquery.min.js"></script>
-    <meta name="theme-color" content="#1C263C">
+    <script src="https://apis.google.com/js/api:client.js"></script>
+
     <meta charset="UTF-8">
     <title>MetaLib</title>
-    <script>
-        $(document).ready(function() {
-            if ($(window).width() < 560) {
-                $("#login").detach().appendTo("#header");
-            }
-
-            $(window).resize(function () {
-                if ($(window).width() < 512) {
-                    $("#login").detach().appendTo("#header");
-                } else if ($(window).width() >= 512) {
-                    $("#login").detach().appendTo("#user");
-                }
-            });
-        });
-    </script>
 </head>
 <body>
-
 
 <div class="top-box container">
     <div class="logo">
@@ -37,8 +21,13 @@
         <h1 class="logo-name">MetaLib</h1>
     </div>
     <div class="user" id="user">
-        <div class="g-signin2" data-onsuccess="onSignIn" id="login"></div>
-        {{/*<a href="#" onclick="signOut();">Sign out</a>*/}}
+        {{/*        <a href="#" onclick="signOut();">Sign out</a>*/}}
+        <div class="login-btn header-item" id="login">
+            <a href="#sign-in">
+                <img src="/static/img/google.svg" alt="Google">
+                <span id="login-text">Sign In</span>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -48,32 +37,71 @@
     <div class="header-item"><a href="#">Libraries</a></div>
 </header>
 
+<script>
+    let minWidth = 516;
+
+    let loginBtn = document.getElementById('login');
+    let headerDiv = document.getElementById('header');
+    let userDiv = document.getElementById('user');
+
+    if (window.innerWidth <= minWidth) {
+        headerDiv.appendChild(loginBtn);
+    }
+
+    window.onresize = function() {
+        if (window.innerWidth <= minWidth) {
+            headerDiv.appendChild(loginBtn);
+        }else {
+            userDiv.appendChild(loginBtn);
+        }
+    };
+</script>
 
 <form action="" class="search-box container">
     <input type="text" name="" class="search-bar" placeholder="Search...">
     <input type="submit" value="" class="search-btn">
 </form>
 
-
 <div class="content container">
     Hello World
 </div>
 
 <script>
-    function onSignIn(googleUser) {
-        var profile = googleUser.getBasicProfile();
-        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        console.log('Name: ' + profile.getName());
-        console.log('Image URL: ' + profile.getImageUrl());
-        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    function onSignIn(user) {
+        $('#login-text').text('Signed in');
+        let token = user.getAuthResponse().id_token;
+
+        $.ajax({
+            type: 'POST',
+            url: 'func/auth',
+            data: `token=${token}`
+        });
+    }
+
+    function onFailSignIn(error) {
+        $('#login-text').text('Failed');
+        console.error(error);
     }
 
     function signOut() {
-        var auth2 = gapi.auth2.getAuthInstance();
+        let auth2 = gapi.auth2.getAuthInstance();
         auth2.signOut().then(function () {
+            $('#login-text').text('Sign In');
             console.log('User signed out.');
         });
     }
+
+    $(document).ready(function () {
+        // Google auth
+        gapi.load('auth2', function () {
+            let auth2 = gapi.auth2.init({
+                client_id: '{{.ClientID}}'
+            });
+
+            let loginBtn = document.getElementById('login');
+            auth2.attachClickHandler(loginBtn, {}, onSignIn, onFailSignIn);
+        });
+    });
 </script>
 
 </body>

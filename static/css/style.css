@@ -6,7 +6,7 @@
 
     --black: #212121;
     --shadow: 0 2px 4px 0 rgba(0,0,0,.25);
-    /*--border: 1px solid #c2c8ce;*/
+    --shadow-active: 0 2px 4px 0 #3cce7b;
 }
 
 html, body {
@@ -18,6 +18,7 @@ html, body {
     font-family: 'IBM Plex Sans', sans-serif;
     box-sizing: border-box;
     outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 input::-moz-focus-inner {
@@ -68,6 +69,10 @@ a {
     height: 2.8rem;
 }
 
+.header-item:hover {
+    box-shadow: var(--shadow-active);
+}
+
 .header-item a {
     width: 100%;
     height: 100%;
@@ -77,8 +82,12 @@ a {
     align-items: center;
 }
 
-#header #login {
-    margin: auto;
+.user .login-btn {
+    width: 8.4rem;
+}
+
+.login-btn img {
+    margin-right: 1rem;
 }
 
 .search-box {
@@ -107,6 +116,10 @@ a {
     border: none;
     box-shadow: var(--shadow);
     cursor: pointer;
+}
+
+.search-bar:hover, .search-btn:hover, .search-bar:focus{
+    box-shadow: var(--shadow-active);
 }
 
 /* Content */
