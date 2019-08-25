@@ -5,7 +5,7 @@
     --gray: #e2e2e2;
 
     --black: #212121;
-    --shadow: 0 2px 4px 0 rgba(0,0,0,.25);
+    --shadow: 0 2px 4px 0 rgba(0, 0, 0, .25);
     --shadow-active: 0 2px 4px 0 #3cce7b;
 }
 
@@ -53,7 +53,7 @@ a {
     margin: 0 0 1rem 0;
 }
 
-.logo-img{
+.logo-img {
     width: 9rem;
 }
 
@@ -118,7 +118,7 @@ a {
     cursor: pointer;
 }
 
-.search-bar:hover, .search-btn:hover, .search-bar:focus{
+.search-bar:hover, .search-btn:hover, .search-bar:focus {
     box-shadow: var(--shadow-active);
 }
 

@@ -1,0 +1,111 @@
+{{define  "base"}}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/static/css/style.css">
+        <link rel="shortcut icon" href="/static/img/MetaLib.png" type="image/x-icon">
+        <meta name="theme-color" content="#333333">
+
+        <script src="/static/libs/jquery.min.js"></script>
+        <script src="https://apis.google.com/js/api:client.js"></script>
+
+        <meta charset="UTF-8">
+        <title>MetaLib</title>
+        {{template "headers" .}}
+    </head>
+    <body>
+
+    <div class="top-box container">
+        <div class="logo">
+            <img src="/static/img/MetaLib.svg" alt="" class="logo-img">
+            <h1 class="logo-name">MetaLib</h1>
+        </div>
+        <div class="user" id="user">
+            {{/*        <a href="#" onclick="signOut();">Sign out</a>*/}}
+            <div class="login-btn header-item" id="login">
+                <a href="#sign-in">
+                    <img src="/static/img/google.svg" alt="Google">
+                    <span id="login-text">Sign In</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <header class="header container" id="header">
+        <div class="header-item"><a href="/">Home</a></div>
+        <div class="header-item"><a href="#">Books</a></div>
+        <div class="header-item"><a href="#">Libraries</a></div>
+    </header>
+
+    <script>
+        let minWidth = 516;
+
+        let loginBtn = document.getElementById('login');
+        let headerDiv = document.getElementById('header');
+        let userDiv = document.getElementById('user');
+
+        if (window.innerWidth <= minWidth) {
+            headerDiv.appendChild(loginBtn);
+        }
+
+        window.onresize = function () {
+            if (window.innerWidth <= minWidth) {
+                headerDiv.appendChild(loginBtn);
+            } else {
+                userDiv.appendChild(loginBtn);
+            }
+        };
+    </script>
+
+    <form action="" class="search-box container">
+        <input type="text" name="" class="search-bar" placeholder="Search...">
+        <input type="submit" value="" class="search-btn">
+    </form>
+
+    <div class="content container">
+        {{template "content" .}}
+    </div>
+
+    <script>
+        function onSignIn(user) {
+            $('#login-text').text('Signed in');
+            let token = user.getAuthResponse().id_token;
+
+            $.ajax({
+                type: 'POST',
+                url: 'func/auth',
+                data: `token=${token}`
+            });
+        }
+
+        function onFailSignIn(error) {
+            $('#login-text').text('Failed');
+            console.error(error);
+        }
+
+        function signOut() {
+            let auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                $('#login-text').text('Sign In');
+                console.log('User signed out.');
+            });
+        }
+
+        $(document).ready(function () {
+            // Google auth
+            gapi.load('auth2', function () {
+                let auth2 = gapi.auth2.init({
+                    client_id: '{{.ClientID}}'
+                });
+
+                let loginBtn = document.getElementById('login');
+                auth2.attachClickHandler(loginBtn, {}, onSignIn, onFailSignIn);
+            });
+        });
+    </script>
+    {{template "scripts" .}}
+    </body>
+    </html>
+{{end}}

@@ -1,12 +1,12 @@
 package main
 
 import (
+	"MetaLib/templmanager"
 	"fmt"
 	"github.com/futurenda/google-auth-id-token-verifier"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"github.com/t-tomalak/logrus-easy-formatter"
-	"html/template"
 	"net/http"
 	"os"
 )
@@ -18,7 +18,6 @@ func init() {
 	})
 }
 
-var templates *template.Template
 var gVerifier googleAuthIDTokenVerifier.Verifier
 
 const (
@@ -26,11 +25,16 @@ const (
 )
 
 func main() {
+	var err error
 	port := os.Getenv("PORT")
 
 	gVerifier = googleAuthIDTokenVerifier.Verifier{}
 
-	templates = template.Must(template.ParseGlob("templates/*.html"))
+	templmanager.SetTemplateConfig("templates/", "templates/layout/")
+	err = templmanager.LoadTemplates()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	r := mux.NewRouter()
 
@@ -43,7 +47,7 @@ func main() {
 	http.Handle("/", r)
 
 	log.Info("Start listening on port: " + port)
-	err := http.ListenAndServe(":"+port, nil)
+	err = http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,7 +57,7 @@ func indexGetHandler(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		ClientID string
 	}{GOOGLE_CLIENT_ID}
-	err := templates.ExecuteTemplate(w, "index.html", data)
+	err := templmanager.RenderTemplate(w, "index.html", data)
 	if err != nil {
 		log.Fatal(err)
 	}
