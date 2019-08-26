@@ -1,6 +1,7 @@
 package templmanager
 
 import (
+	"MetaLib/utils"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -75,12 +76,18 @@ func LoadTemplates() (err error) {
 
 // Renders template
 func RenderTemplate(w http.ResponseWriter, name string, data interface{}) error {
+
+	ctxData := struct {
+		ClientID string
+		Data     interface{}
+	}{utils.GoogleClientId, data}
+
 	tmpl, ok := templates[name]
 	if !ok {
 		return newTemplateManagerError(fmt.Sprintf("The template %s does not exist.", name))
 	}
 
-	err := tmpl.Execute(w, data)
+	err := tmpl.Execute(w, ctxData)
 	if err != nil {
 		return err
 	}
