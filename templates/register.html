@@ -1,0 +1,28 @@
+{{define "headers"}}{{end}}
+{{define "scripts"}}
+    <script>
+        $(document).ready(function () {
+            $('#register-form').submit(function (e) {
+                $.ajax({
+                   type: 'POST',
+                   url: 'register',
+                   data: $(this).serialize(),
+                   success:function (data) {
+                       if (data === "registered"){
+                           window.location.href = "/"
+                       }else{
+                           alert(data)
+                       }
+                   }
+                });
+                e.preventDefault()
+            });
+        });
+    </script>
+{{end}}
+{{define "content"}}
+    <form id="register-form">
+        <input type="text" name="username">
+        <button type="submit">Confirm</button>
+    </form>
+{{end}}

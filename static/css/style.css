@@ -82,8 +82,13 @@ a {
     align-items: center;
 }
 
-.user .login-btn {
-    width: 8.4rem;
+.user .user-btn {
+    min-width: 8.4rem;
+}
+
+.user-btn a {
+    padding-left: .4rem;
+    padding-right: .4rem;
 }
 
 .login-btn img {

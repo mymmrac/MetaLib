@@ -78,8 +78,8 @@ func LoadTemplates() (err error) {
 func RenderTemplate(w http.ResponseWriter, name string, data interface{}) error {
 
 	ctxData := struct {
-		ClientID string
-		Data     interface{}
+		GoogleClientID string
+		Data           interface{}
 	}{utils.GoogleClientId, data}
 
 	tmpl, ok := templates[name]

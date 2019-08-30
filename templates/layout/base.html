@@ -1,3 +1,9 @@
+{{define "login"}}
+    <a href="#sign-in" id="login-btn" class="login-btn">
+        <img src="/static/img/google.svg" alt="Google">
+        <span id="login-text">Sign In</span>
+    </a>
+{{end}}
 {{define  "base"}}
     <!DOCTYPE html>
     <html lang="en">
@@ -23,12 +29,19 @@
             <h1 class="logo-name">MetaLib</h1>
         </div>
         <div class="user" id="user">
-            {{/*        <a href="#" onclick="signOut();">Sign out</a>*/}}
-            <div class="login-btn header-item" id="login">
-                <a href="#sign-in">
-                    <img src="/static/img/google.svg" alt="Google">
-                    <span id="login-text">Sign In</span>
-                </a>
+            <div class="user-btn header-item" id="user-btn">
+                {{with .Data.User}}
+                    {{if eq .Status 1}}
+                        <a href="/profile">
+                            {{.Username}}
+{{/*                            <a href="#" onclick="signOut()">Logout</a>*/}}
+                        </a>
+                    {{else}}
+                        {{template "login" .}}
+                    {{end}}
+                {{else}}
+                    {{template "login" .}}
+                {{end}}
             </div>
         </div>
     </div>
@@ -42,7 +55,7 @@
     <script>
         let minWidth = 516;
 
-        let loginBtn = document.getElementById('login');
+        let loginBtn = document.getElementById('user-btn');
         let headerDiv = document.getElementById('header');
         let userDiv = document.getElementById('user');
 
@@ -76,7 +89,14 @@
             $.ajax({
                 type: 'POST',
                 url: 'func/auth',
-                data: `token=${token}`
+                data: `token=${token}`,
+                success: function (data) {
+                    if (data === "logged") {
+                        window.location.reload();
+                    } else if (data === "register") {
+                        window.location.href = "/register";
+                    }
+                }
             });
         }
 
@@ -88,8 +108,7 @@
         function signOut() {
             let auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
-                $('#login-text').text('Sign In');
-                console.log('User signed out.');
+                window.location.href = "/logout";
             });
         }
 
@@ -97,11 +116,17 @@
             // Google auth
             gapi.load('auth2', function () {
                 let auth2 = gapi.auth2.init({
-                    client_id: '{{.ClientID}}'
+                    client_id: '{{.GoogleClientID}}'
                 });
-
-                let loginBtn = document.getElementById('login');
+                {{with .Data.User}}
+                {{if ne .Status 1}}
+                let loginBtn = document.getElementById('login-btn');
                 auth2.attachClickHandler(loginBtn, {}, onSignIn, onFailSignIn);
+                {{end}}
+                {{else}}
+                let loginBtn = document.getElementById('login-btn');
+                auth2.attachClickHandler(loginBtn, {}, onSignIn, onFailSignIn);
+                {{end}}
             });
         });
     </script>
