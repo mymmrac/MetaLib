@@ -1,9 +1,3 @@
-{{define "login"}}
-    <a href="#sign-in" id="login-btn" class="login-btn">
-        <img src="/static/img/google.svg" alt="Google">
-        <span id="login-text">Sign In</span>
-    </a>
-{{end}}
 {{define  "base"}}
     <!DOCTYPE html>
     <html lang="en">
@@ -30,17 +24,16 @@
         </div>
         <div class="user" id="user">
             <div class="user-btn header-item" id="user-btn">
-                {{with .Data.User}}
-                    {{if eq .Status 1}}
-                        <a href="/profile">
-                            {{.Username}}
-{{/*                            <a href="#" onclick="signOut()">Logout</a>*/}}
-                        </a>
-                    {{else}}
-                        {{template "login" .}}
-                    {{end}}
+                {{if eq .User.Status 1}}
+                    <a href="/profile">
+                        {{.User.Username}}
+                        {{/*                            <a href="#" onclick="signOut()">Logout</a>*/}}
+                    </a>
                 {{else}}
-                    {{template "login" .}}
+                    <a href="#sign-in" id="login-btn" class="login-btn">
+                        <img src="/static/img/google.svg" alt="Google">
+                        <span id="login-text">Sign In</span>
+                    </a>
                 {{end}}
             </div>
         </div>
@@ -118,12 +111,7 @@
                 let auth2 = gapi.auth2.init({
                     client_id: '{{.GoogleClientID}}'
                 });
-                {{with .Data.User}}
-                {{if ne .Status 1}}
-                let loginBtn = document.getElementById('login-btn');
-                auth2.attachClickHandler(loginBtn, {}, onSignIn, onFailSignIn);
-                {{end}}
-                {{else}}
+                {{if ne .User.Status 1}}
                 let loginBtn = document.getElementById('login-btn');
                 auth2.attachClickHandler(loginBtn, {}, onSignIn, onFailSignIn);
                 {{end}}

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"MetaLib/models"
 	"MetaLib/routers"
 	"MetaLib/templmanager"
 	"MetaLib/utils"
+	"encoding/gob"
 	log "github.com/sirupsen/logrus"
 	"github.com/t-tomalak/logrus-easy-formatter"
 	"net/http"
@@ -15,6 +17,8 @@ func init() {
 		TimestampFormat: "2006-01-02 15:04:05",
 		LogFormat:       "[%lvl%]: %time% - %msg%\n",
 	})
+
+	gob.Register(&models.User{})
 }
 
 func main() {

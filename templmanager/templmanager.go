@@ -1,8 +1,10 @@
 package templmanager
 
 import (
+	"MetaLib/models"
 	"MetaLib/utils"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"html/template"
 	"net/http"
 	"path/filepath"
@@ -75,19 +77,27 @@ func LoadTemplates() (err error) {
 }
 
 // Renders template
-func RenderTemplate(w http.ResponseWriter, name string, data interface{}) error {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, name string, data interface{}) error {
+	session := utils.GetSession(r)
+
+	user, err := models.GetUser(session)
+	if err != nil {
+		log.Error(err)
+		user = &models.User{}
+	}
 
 	ctxData := struct {
 		GoogleClientID string
+		User           *models.User
 		Data           interface{}
-	}{utils.GoogleClientId, data}
+	}{utils.GoogleClientId, user, data}
 
 	tmpl, ok := templates[name]
 	if !ok {
 		return newTemplateManagerError(fmt.Sprintf("The template %s does not exist.", name))
 	}
 
-	err := tmpl.Execute(w, ctxData)
+	err = tmpl.Execute(w, ctxData)
 	if err != nil {
 		return err
 	}
