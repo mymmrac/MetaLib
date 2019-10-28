@@ -24,6 +24,8 @@ func NewRouter() *mux.Router {
 	fs := http.FileServer(http.Dir("./static/"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
 
+	models.GetBookById(1) // REMOVE
+
 	return r
 }
 
