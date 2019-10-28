@@ -2,7 +2,7 @@ package models
 
 import (
 	"MetaLib/utils"
-	log "github.com/sirupsen/logrus"
+	"errors"
 )
 
 type Genre struct {
@@ -11,24 +11,11 @@ type Genre struct {
 }
 
 func GetGenreById(id int) (*Genre, error) {
-	genre, err := utils.DB.Query("SELECT * FROM genres WHERE Id = $1;", id)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		err = genre.Close()
-		if err != nil {
-			log.Error(err)
-		}
-	}()
-	if genre.Next() {
-		g := Genre{}
-		err = genre.Scan(&g.Id, &g.Name)
-		if err != nil {
-			return nil, err
-		}
-		return &g, nil
-	} else {
-		return nil, genre.Err()
+	var genre Genre
+	notExist := utils.DB.First(&genre, id).RecordNotFound()
+	if notExist {
+		return nil, errors.New("genre not exist")
+	}else{
+		return &genre, nil
 	}
 }

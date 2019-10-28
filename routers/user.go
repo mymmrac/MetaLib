@@ -79,6 +79,11 @@ func registerPostHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
+		if user == nil {
+			log.Fatal("User is nil")
+			return
+		}
+
 		if user.Status != models.Registration {
 			_, err = fmt.Fprint(w, "no registration status", user)
 			if err != nil {
@@ -95,11 +100,8 @@ func registerPostHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		isUsernameUsed, err := utils.DB.Query("SELECT * FROM users WHERE username = $1;", username)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if isUsernameUsed.Next() {
+		isUsernameUsed := utils.DB.First(&models.User{}, "username = ?", username).RecordNotFound()
+		if !isUsernameUsed {
 			_, err = fmt.Fprint(w, "username already used")
 			if err != nil {
 				log.Fatal(err)
@@ -107,12 +109,9 @@ func registerPostHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		_, err = utils.DB.Query("INSERT INTO users (uid, username) VALUES ($1, $2);", user.Uid, username) // check if username exist
-		if err != nil {
-			log.Fatal(err)
-		}
-
 		user.Username = username
+		utils.DB.Create(user)
+
 		user.Status = models.Logged
 		session.Values["user"] = user
 
@@ -143,25 +142,11 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		is, err := utils.DB.Query("SELECT uid, username FROM users WHERE uid = $1 LIMIT 1;", googleUser.Sub)
-		defer func() {
-			err = is.Close()
-			if err != nil {
-				log.Fatal(err)
-			}
-		}()
-		if err != nil {
-			log.Fatal(err)
-		}
 
 		var user models.User
 
-		if is.Next() {
-			err := is.Scan(&user.Uid, &user.Username)
-			if err != nil {
-				log.Fatal(err)
-			}
-
+		is := !utils.DB.First(&user, "uid = ?", googleUser.Sub).RecordNotFound()
+		if (is){
 			user.Status = models.Logged
 			session.Values["user"] = user
 
@@ -176,7 +161,7 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			log.Info("Login:", user)
-		} else {
+		}else{
 			user.Uid = googleUser.Sub
 			user.Status = models.Registration
 			session.Values["user"] = user
@@ -191,6 +176,7 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 				log.Fatal(err)
 			}
 		}
+
 	} else {
 		//	FIX LATER
 		log.Error("User not verified")

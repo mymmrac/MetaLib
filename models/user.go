@@ -4,7 +4,6 @@ import (
 	"MetaLib/utils"
 	"fmt"
 	"github.com/gorilla/sessions"
-	log "github.com/sirupsen/logrus"
 )
 
 type UserStatus int
@@ -16,7 +15,7 @@ const (
 
 type User struct {
 	Uid      string
-	Status   UserStatus
+	Status   UserStatus `gorm:"-"`
 	Username string
 }
 
@@ -50,29 +49,8 @@ func GetUser(session *sessions.Session) (*User, error) {
 			return nil, &UserError{"Convert to user failed", ConvertFailed}
 		}
 		if user.Status != NoLogin && user.Status != Registration {
-			is, err := utils.DB.Query("SELECT EXISTS(SELECT uid FROM users WHERE uid = $1 LIMIT 1);", user.Uid)
-			defer func() {
-				err = is.Close()
-				if err != nil {
-					log.Fatal(err)
-				}
-			}()
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			if is.Next() {
-				var userExist bool
-				err = is.Scan(&userExist)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				if !userExist {
-					return nil, &UserError{fmt.Sprint("No such user:", user), NoSuchUser}
-				}
-			}else {
-				log.Fatal(is.Err())
+			if (utils.DB.First(&User{}, "uid = ?", user.Uid).RecordNotFound()){
+				return nil, &UserError{fmt.Sprint("No such user:", user), NoSuchUser}
 			}
 		}
 	}else {
@@ -80,5 +58,3 @@ func GetUser(session *sessions.Session) (*User, error) {
 	}
 	return user, nil
 }
-
-
