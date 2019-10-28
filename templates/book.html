@@ -1,0 +1,25 @@
+{{define "headers"}}
+    <link rel="stylesheet" href="/static/css/book.css">
+{{end}}
+{{define "scripts"}}{{end}}
+{{define "content"}}
+    <div class="shadow p-1">
+        {{if .Err}}
+            {{.Err}}
+        {{else}}
+            {{with .Book}}
+                <ul class="book-list">
+                    <li>Name: {{.Name}}</li>
+                    <li>Author: {{.Author.Name}}</li>
+                    <li>Genre: {{.Genre.Name}}</li>
+                    <li>Year: {{.Year}}</li>
+                    <li>Rating: {{.Rating}}</li>
+                    <li>
+                        Cover:
+                        <img src="{{.Cover}}" alt="{{.Name}}" width="240">
+                    </li>
+                </ul>
+            {{end}}
+        {{end}}
+    </div>
+{{end}}

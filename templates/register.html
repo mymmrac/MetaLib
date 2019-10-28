@@ -1,19 +1,36 @@
-{{define "headers"}}{{end}}
+{{define "headers"}}
+    <link rel="stylesheet" href="/static/css/register.css">
+{{end}}
 {{define "scripts"}}
     <script>
         $(document).ready(function () {
-            $('#register-form').submit(function (e) {
+            $('#reg-form').submit(function (e) {
                 $.ajax({
-                   type: 'POST',
-                   url: 'register',
-                   data: $(this).serialize(),
-                   success:function (data) {
-                       if (data === "registered"){
-                           window.location.href = "/"
-                       }else{
-                           alert(data)
-                       }
-                   }
+                    type: 'POST',
+                    url: 'register',
+                    data: $(this).serialize(),
+                    success: function (data) {
+                        if (data === "registered") {
+                            window.location.href = "/"
+                        } else {
+                            $("#reg-text").css("box-shadow", "var(--shadow-red)");
+                            let err;
+                            switch (data) {
+                                case "username already used":
+                                    err = "Username already used!";
+                                    break;
+                                case "invalid username":
+                                    err = "Invalid username! (a-Z,0-9,_ allowed, min 2 chars)";
+                                    break;
+                                default:
+                                    err = "Undefined error!";
+                            }
+                            $("#reg-err").text(err);
+                            if (!$("#reg-err").visible){
+                                $("#reg-err").show("slow");
+                            }
+                        }
+                    }
                 });
                 e.preventDefault()
             });
@@ -21,8 +38,12 @@
     </script>
 {{end}}
 {{define "content"}}
-    <form id="register-form">
-        <input type="text" name="username">
-        <button type="submit">Confirm</button>
-    </form>
+    <div class="reg-form">
+        <form id="reg-form">
+            <div class="reg-text">Please enter your username to continue</div>
+            <input class="reg-input" type="text" name="username" id="reg-text">
+            <button type="submit" class="reg-btn">Confirm</button>
+            <div class="reg-err" id="reg-err"></div>
+        </form>
+    </div>
 {{end}}

@@ -1,0 +1,55 @@
+.reg-form {
+    max-width: 460px;
+    min-height: 240px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 8rem auto 4rem auto;
+}
+
+.reg-input, .reg-btn, .reg-form {
+    border: none;
+    box-shadow: var(--shadow);
+}
+
+.reg-input:hover, .reg-btn:hover{
+    box-shadow: var(--shadow-active);
+}
+
+.reg-text, .reg-input, .reg-btn {
+    margin: 1rem 0;
+}
+
+.reg-input, .reg-btn{
+    font-size: 1rem;
+    padding: 0.3rem;
+
+}
+
+.reg-btn {
+    background: #fff;
+}
+
+.reg-text {
+    font-size: 1.2rem;
+    padding: 0 .2rem;
+}
+
+.reg-err {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: .9rem;
+    color: var(--red);
+}
+
+@media (max-width: 512px) {
+    .reg-form {
+        margin: 4rem auto;
+    }
+
+    .reg-err {
+        font-size: .8rem;
+    }
+}

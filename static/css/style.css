@@ -7,6 +7,7 @@
     --black: #212121;
     --shadow: 0 2px 4px 0 rgba(0, 0, 0, .25);
     --shadow-active: 0 2px 4px 0 #3cce7b;
+    --shadow-red: 0 2px 4px 0 var(--red);
 }
 
 html, body {
@@ -35,6 +36,18 @@ a {
     max-width: 1300px;
 }
 
+.shadow {
+    box-shadow: var(--shadow);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.p-1 {
+    padding: 1rem;
+}
+
 /* Header */
 
 .top-box {
@@ -46,6 +59,7 @@ a {
 .logo {
     display: flex;
     align-items: flex-end;
+    max-width: 100%;
 }
 
 .logo-name {
@@ -54,7 +68,7 @@ a {
 }
 
 .logo-img {
-    width: 9rem;
+    max-width: 9rem;
 }
 
 
@@ -113,9 +127,7 @@ a {
 }
 
 .search-btn {
-    background: url("/static/img/search.svg");
-    background-position: center;
-    background-repeat: no-repeat;
+    background: url("/static/img/search.svg") no-repeat center;
     width: 2.2rem;
     height: 2.2rem;
     border: none;
@@ -131,4 +143,11 @@ a {
 
 .content {
     margin-top: 2rem !important;
+}
+
+@media (max-width: 300px) {
+    .logo-name{
+        margin: 0 .2rem .8rem 0;
+        font-size: 2.4rem;
+    }
 }
