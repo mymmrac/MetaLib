@@ -6,7 +6,7 @@ import (
 )
 
 type Genre struct {
-	Id   int
+	Id   uint
 	Name string
 }
 

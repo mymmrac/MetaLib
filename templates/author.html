@@ -1,10 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{{define "headers"}}
+    <link rel="stylesheet" href="/static/css/author.css">
+{{end}}
+{{define "scripts"}}{{end}}
+{{define "content"}}
+    <div class="shadow p-1">
+        {{if .Err}}
+            {{.Err}}
+        {{else}}
+            {{with .Author}}
+                Name: {{.Name}}
+            {{end}}
+            <br>
+            Book list:
+            <ol>
+                {{range .Books}}
+                    <li><a href="/book/{{.Id}}">{{.Name}}</a></li>
+                {{else}}
+                    No books yet.
+                {{end}}
+            </ol>
+        {{end}}
+    </div>
+{{end}}

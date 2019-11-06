@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{{define "headers"}}{{end}}
+{{define "scripts"}}{{end}}
+{{define "content"}}
+    <div class="shadow p-1">
+        {{if .LibrariesErr}}
+            {{.LibrariesErr}}
+        {{else}}
+            <ul>
+                {{range .Libraries}}
+                    <li><a href="/library/{{.Id}}">{{.Name}}</a></li>
+                {{end}}
+            </ul>
+        {{end}}
+    </div>
+{{end}}

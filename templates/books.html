@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{{define "headers"}}
+    <link class="page-item" nk rel="stylesheet" href="/static/css/utils.css">
+{{end}}
+{{define "scripts"}}{{end}}
+{{define "content"}}
+    <div class="shadow p-1">
+        {{if .BooksErr}}
+            No books found.
+        {{else}}
+            {{range .Books}}
+                <div>
+                    <img src="{{.Cover}}" alt="{{.Name}}" width="200">
+                    <a href="/book/{{.Id}}">{{.Name}}</a>
+                </div>
+            {{else}}
+                No books found.
+            {{end}}
+            <nav>
+                <div class="pagination">
+                    <a class="page-item" href="?page=1"><span>&#171;</span></a>
+                    <a class="page-item" href="?page={{.PreviousPage}}"><span>&#8249;</span></a>
+                    {{ range .Pages}}
+                        <a class="page-item{{if eq . $.Page}} active{{end}}" href="?page={{.}}">{{.}}</a>
+                    {{end}}
+                    <a class="page-item" href="?page={{.NextPage}}"><span>&#8250;</span></a>
+                    <a class="page-item" href="?page={{.PageCount}}"><span>&#187;</span></a>
+                </div>
+            </nav>
+        {{end}}
+    </div>
+{{end}}

@@ -10,6 +10,23 @@ import (
 	"regexp"
 )
 
+func profileHandler(w http.ResponseWriter, r *http.Request) {
+	session := utils.GetSession(r)
+
+	user, err := models.GetUser(session)
+	if err != nil || user.Status != models.Logged || user == nil {
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+
+	err = templmanager.RenderTemplate(w, r, "profile.html", struct {
+		User models.User
+	}{User: *user})
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	session := utils.GetSession(r)
 
@@ -46,7 +63,7 @@ func registerGetHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if user.Status != models.Registration {
+	if user == nil || user.Status != models.Registration {
 		http.Redirect(w, r, "/", 302)
 	}
 
@@ -146,7 +163,7 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		var user models.User
 
 		is := !utils.DB.First(&user, "uid = ?", googleUser.Sub).RecordNotFound()
-		if (is){
+		if (is) {
 			user.Status = models.Logged
 			session.Values["user"] = user
 
@@ -161,7 +178,7 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			log.Info("Login:", user)
-		}else{
+		} else {
 			user.Uid = googleUser.Sub
 			user.Status = models.Registration
 			session.Values["user"] = user

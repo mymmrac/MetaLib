@@ -4,13 +4,13 @@
 {{define "scripts"}}{{end}}
 {{define "content"}}
     <div class="shadow p-1">
-        {{if .Err}}
-            {{.Err}}
+        {{if .BookErr}}
+            {{.BookErr}}
         {{else}}
             {{with .Book}}
                 <ul class="book-list">
                     <li>Name: {{.Name}}</li>
-                    <li>Author: {{.Author.Name}}</li>
+                    <li>Author: <a href="/author/{{.AuthorId}}">{{.Author.Name}}</a></li>
                     <li>Genre: {{.Genre.Name}}</li>
                     <li>Year: {{.Year}}</li>
                     <li>Rating: {{.Rating}}</li>

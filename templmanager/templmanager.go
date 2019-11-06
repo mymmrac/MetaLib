@@ -15,15 +15,15 @@ var templates map[string]*template.Template
 const mainTemplateString = `{{define "main" }} {{ template "base" . }} {{ end }}`
 
 type templateConfig struct {
-	TemplateIncludePath string
 	TemplateLayoutPath  string
+	TemplateIncludePaths []string
 }
 
 var config *templateConfig
 
 // Set template configs
-func SetTemplateConfig(includePath, layoutPath string) {
-	config = &templateConfig{includePath, layoutPath}
+func SetTemplateConfig(layoutPath string, includePath ...string) {
+	config = &templateConfig{TemplateLayoutPath: layoutPath, TemplateIncludePaths: includePath}
 }
 
 type templateManagerError struct {
@@ -53,9 +53,13 @@ func LoadTemplates() (err error) {
 		return err
 	}
 
-	includeFiles, err := filepath.Glob(config.TemplateIncludePath + "*.html")
-	if err != nil {
-		return err
+	var includeFiles []string
+	for _, path := range config.TemplateIncludePaths {
+		include, err := filepath.Glob(path + "*.html")
+		if err != nil {
+			return err
+		}
+		includeFiles = append(includeFiles, include...)
 	}
 
 	mainTemplate := template.New("main")
@@ -82,7 +86,13 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, name string, data in
 
 	user, err := models.GetUser(session)
 	if err != nil {
-		log.Error(err)
+		userErr, ok := err.(*models.UserError)
+		if !ok {
+			log.Fatal("Convert error to UserError failed")
+		}
+		if userErr.Code() != models.EmptySession {
+			log.Error(err)
+		}
 		user = &models.User{}
 	}
 

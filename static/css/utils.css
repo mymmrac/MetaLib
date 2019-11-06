@@ -1,0 +1,35 @@
+/* Pagination */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction:row;
+
+}
+
+.pagination .page-item {
+    box-shadow: var(--shadow);
+    color: var(--black);
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination .page-item+.page-item{
+    margin-left: 0.4rem;
+}
+
+.pagination .page-item:visited {
+    color: var(--black);
+}
+
+.pagination .page-item:hover{
+    box-shadow: var(--shadow-active);
+}
+
+.pagination .active {
+    box-shadow: var(--shadow-active);
+}

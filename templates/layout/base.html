@@ -41,8 +41,10 @@
 
     <header class="header container" id="header">
         <div class="header-item"><a href="/">Home</a></div>
-        <div class="header-item"><a href="#">Books</a></div>
-        <div class="header-item"><a href="#">Libraries</a></div>
+        <div class="header-item"><a href="/books">Books</a></div>
+        <div class="header-item"><a href="/authors">Authors</a></div>
+        <div class="header-item"><a href="/libraries">Libraries</a></div>
+        <div class="header-item"><a href="/about">About</a></div>
     </header>
 
     <script>
@@ -65,8 +67,8 @@
         };
     </script>
 
-    <form action="" class="search-box container">
-        <input type="text" name="" class="search-bar" placeholder="Search...">
+    <form action="/search" method="GET" class="search-box container">
+        <input type="text" name="oq" class="search-bar" placeholder="Search...">
         <input type="submit" value="" class="search-btn">
     </form>
 
