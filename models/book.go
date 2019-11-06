@@ -6,14 +6,14 @@ import (
 )
 
 type Book struct {
-	Id       uint
+	Id       int
 	Name     string
 	Year     int
 	Rating   float64
 	GenreId  int
-	Genre    Genre
+	Genre    *Genre
 	AuthorId int
-	Author   Author
+	Author   *Author
 	Cover    string
 }
 
