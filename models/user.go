@@ -4,9 +4,11 @@ import (
 	"MetaLib/utils"
 	"fmt"
 	"github.com/gorilla/sessions"
+	"net/http"
 )
 
 type UserStatus int
+
 const (
 	NoLogin UserStatus = iota
 	Logged
@@ -14,6 +16,7 @@ const (
 )
 
 type User struct {
+	Id       int
 	Uid      string
 	Status   UserStatus `gorm:"-"`
 	Username string
@@ -25,11 +28,13 @@ const (
 	EmptySession UserErrorCode = iota
 	ConvertFailed
 	NoSuchUser
+	UserNotLogged
+	UserNil
 )
 
 type UserError struct {
 	message string
-	code UserErrorCode
+	code    UserErrorCode
 }
 
 func (u UserError) Code() UserErrorCode {
@@ -49,12 +54,28 @@ func GetUser(session *sessions.Session) (*User, error) {
 			return nil, &UserError{"Convert to user failed", ConvertFailed}
 		}
 		if user.Status != NoLogin && user.Status != Registration {
-			if (utils.DB.First(&User{}, "uid = ?", user.Uid).RecordNotFound()){
+			if (utils.DB.First(&User{}, "uid = ?", user.Uid).RecordNotFound()) {
 				return nil, &UserError{fmt.Sprint("No such user:", user), NoSuchUser}
 			}
 		}
-	}else {
+	} else {
 		return nil, &UserError{"No user in session", EmptySession}
+	}
+	return user, nil
+}
+
+func GetUserR(r *http.Request) (*User, error) {
+	session := utils.GetSession(r)
+
+	user, err := GetUser(session)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, &UserError{"User is nil", UserNil}
+	}
+	if user.Status != Logged {
+		return nil, &UserError{"User not logged", UserNotLogged}
 	}
 	return user, nil
 }

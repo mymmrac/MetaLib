@@ -11,10 +11,8 @@ import (
 )
 
 func profileHandler(w http.ResponseWriter, r *http.Request) {
-	session := utils.GetSession(r)
-
-	user, err := models.GetUser(session)
-	if err != nil || user.Status != models.Logged || user == nil {
+	user, err := models.GetUserR(r)
+	if err != nil {
 		http.Redirect(w, r, "/", 302)
 		return
 	}
@@ -163,7 +161,7 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		var user models.User
 
 		is := !utils.DB.First(&user, "uid = ?", googleUser.Sub).RecordNotFound()
-		if (is) {
+		if is {
 			user.Status = models.Logged
 			session.Values["user"] = user
 

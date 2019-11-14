@@ -1,6 +1,4 @@
-{{define "headers"}}
-    <link rel="stylesheet" href="/static/css/author.css">
-{{end}}
+{{define "headers"}}{{end}}
 {{define "scripts"}}{{end}}
 {{define "content"}}
     <div class="shadow p-1">
@@ -8,13 +6,15 @@
             {{.Err}}
         {{else}}
             {{with .Author}}
-                Name: {{.Name}}
+                <h3>{{.Name}}</h3>
             {{end}}
             <br>
             Book list:
             <ol>
                 {{range .Books}}
-                    <li><a href="/book/{{.Id}}">{{.Name}}</a></li>
+                    <li>
+                        <a href="/book/{{.Id}}">{{.Name}}</a> ({{.Rating}})
+                    </li>
                 {{else}}
                     No books yet.
                 {{end}}

@@ -1,24 +1,59 @@
 {{define "headers"}}
     <link rel="stylesheet" href="/static/css/book.css">
 {{end}}
-{{define "scripts"}}{{end}}
+{{define "scripts"}}
+    <script>
+        $(document).ready(function () {
+            $(".star-inp").on("change", function () {
+                if ($(this).val()) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/func/star",
+                        data: $("#rating-form").serialize(),
+                        success: function () {
+                            alert("Voted");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{{end}}
 {{define "content"}}
     <div class="shadow p-1">
         {{if .BookErr}}
             {{.BookErr}}
         {{else}}
+            {{$r := .UserRating}}
+            {{$rs := .RatingStars}}
             {{with .Book}}
-                <ul class="book-list">
-                    <li>Name: {{.Name}}</li>
-                    <li>Author: <a href="/author/{{.AuthorId}}">{{.Author.Name}}</a></li>
-                    <li>Genre: {{.Genre.Name}}</li>
-                    <li>Year: {{.Year}}</li>
-                    <li>Rating: {{.Rating}}</li>
-                    <li>
-                        Cover:
-                        <img src="{{.Cover}}" alt="{{.Name}}" width="240">
-                    </li>
-                </ul>
+                <div class="book">
+                    <div class="book-info">
+                        <h3>{{.Name}}</h3>
+                        <div class="book-rating">
+                            <div class="rating-info">
+                                <span class="rating-number">Rating: {{.Rating}}</span>
+                                {{/*                                <span class="rating-votes">Votes: {{0}}</span>*/}}
+                            </div>
+                            <div class="stars">
+                                <form id="rating-form">
+                                    <input type="hidden" name="book-id" value="{{.Id}}">
+                                    {{range $rs}}
+                                        <input type="radio" name='rating' id="star{{.}}" class="star-inp" value="{{.}}"
+                                               {{if eq $r .}}checked{{end}}/>
+                                        <label for="star{{.}}"><span>&#9733;</span> </label>
+                                    {{end}}
+                                </form>
+                            </div>
+                        </div>
+                        <p>Author: <a href="/author/{{.Author.Id}}">{{.Author.Name}}</a></p>
+                        <p>Genre: {{.Genre.Name}}</p>
+                        <p>Year: {{.Year}}</p>
+                        <br>
+                        <div class="book-description">{{.Description}}</div>
+                    </div>
+                    <img src="{{.Cover}}" alt="{{.Name}}" class="book-cover">
+                </div>
             {{end}}
         {{end}}
     </div>

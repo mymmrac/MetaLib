@@ -30,6 +30,8 @@ func NewRouter() *mux.Router {
 
 	r.HandleFunc("/search", searchHandler).Methods("GET")
 
+	r.HandleFunc("/func/star", starHandler).Methods("POST")
+
 	r.NotFoundHandler = http.HandlerFunc(NotFoundHandler)
 
 	fs := http.FileServer(http.Dir("./static/"))
@@ -47,7 +49,7 @@ func indexGetHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func aboutHandler(w http.ResponseWriter, r *http.Request){
+func aboutHandler(w http.ResponseWriter, r *http.Request) {
 	err := templmanager.RenderTemplate(w, r, "about.html", nil)
 	if err != nil {
 		log.Fatal(err)
@@ -61,7 +63,7 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func searchHandler(w http.ResponseWriter, r *http.Request){
+func searchHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		log.Error(err)
 		http.Redirect(w, r, "/", 302)
@@ -73,7 +75,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request){
 
 	err := templmanager.RenderTemplate(w, r, "search.html", struct {
 		SearchFor string
-	}{SearchFor:query})
+	}{SearchFor: query})
 	if err != nil {
 		log.Fatal(err)
 	}

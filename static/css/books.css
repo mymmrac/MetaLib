@@ -1,0 +1,21 @@
+.book-list {
+    display: grid;
+    grid-gap: 0.2rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.book {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.book img {
+    width: 200px;
+    height: 280px;
+}
+
+.book .book-info {
+    margin: 1rem 0;
+}

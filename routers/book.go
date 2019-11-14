@@ -20,10 +20,34 @@ func bookHandler(w http.ResponseWriter, r *http.Request) {
 
 	book, bookErr := models.GetBookById(bookId)
 
+	var userRatingNumber int
+
+	session := utils.GetSession(r)
+	user, err := models.GetUser(session)
+	if err != nil || user.Status != models.Logged {
+		userRatingNumber = 0
+	} else {
+		var userRating models.Rating
+		userRatingNotFound := utils.DB.Where("user_id = ? and book_id = ?", user.Id, bookId).First(&userRating).RecordNotFound()
+
+		if userRatingNotFound {
+			userRatingNumber = 0
+		} else {
+			userRatingNumber = userRating.Rating
+		}
+	}
+
+	ratingStars := make([]int, 10)
+	for i := range ratingStars {
+		ratingStars[i] = 10 - i
+	}
+
 	err = templmanager.RenderTemplate(w, r, "book.html", struct {
-		Book    *models.Book
-		BookErr error
-	}{Book: book, BookErr: bookErr})
+		Book        *models.Book
+		BookErr     error
+		UserRating  int
+		RatingStars []int
+	}{Book: book, BookErr: bookErr, UserRating: userRatingNumber, RatingStars: ratingStars})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -71,7 +95,7 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 
 	var books []models.Book
 	offset := (page - 1) * perPage
-	notFind := utils.DB.Limit(perPage).Offset(offset).Find(&books).RecordNotFound()
+	notFind := utils.DB.Limit(perPage).Offset(offset).Set("gorm:auto_preload", true).Find(&books).RecordNotFound()
 	if notFind {
 		booksErr = errors.New("books not found")
 	}
@@ -100,4 +124,44 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func starHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		log.Error(err)
+		return
+	}
+
+	ratingStr := r.PostFormValue("rating")
+	if len(ratingStr) < 0 {
+		return
+	}
+	rating, err := strconv.Atoi(ratingStr)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	bookIdSrt := r.PostFormValue("book-id")
+	if len(bookIdSrt) < 0 {
+		return
+	}
+	bookId, err := strconv.Atoi(bookIdSrt)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	user, err := models.GetUserR(r)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	err = utils.DB.Where(models.Rating{UserId: user.Id, BookId: bookId}).Assign(models.Rating{Rating: rating}).FirstOrCreate(&models.Rating{}).Error
+	if err != nil {
+		log.Error(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

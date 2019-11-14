@@ -1,3 +1,75 @@
-.book-list {
-    list-style: square;
+.book {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.book-cover {
+    width: 360px;
+    height: 500px;
+}
+
+.book-info {
+    margin-bottom: 0.4rem;
+}
+
+.book-description {
+    max-width: 700px;
+}
+
+/* Rating */
+
+.stars {
+    width: auto;
+    display: inline-block;
+}
+
+.stars input {
+    display: none;
+}
+
+.stars label {
+    float: right;
+    display: inline-block;
+    transition: all .3s;
+    color: var(--black);
+    font-size: 1.3rem;
+}
+
+.stars label:before {
+    display: none;
+}
+
+.stars label:hover ~ label,
+.stars label:hover {
+    color: var(--red) !important;
+}
+
+.stars input:checked ~ label {
+    color: var(--green);
+}
+
+.rating-number, .rating-votes {
+    background: var(--green);
+    border-radius: 0.2rem;
+    padding: 2px 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* End */
+
+@media (max-width: 1120px) {
+    .book-description {
+        max-width: 400px;
+    }
+
+}
+
+@media (max-width: 400px) {
+    .book-cover {
+        height: auto;
+        max-width: 100%;
+    }
 }

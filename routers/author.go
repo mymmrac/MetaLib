@@ -24,7 +24,7 @@ func authorHandler(w http.ResponseWriter, r *http.Request) {
 	var books []models.Book
 
 	if authorErr == nil {
-		utils.DB.Where("author_id = ?", author.Id).Find(&books)
+		utils.DB.Where("author_id = ?", author.Id).Order("rating").Find(&books)
 	}
 
 	err = templmanager.RenderTemplate(w, r, "author.html", struct {
@@ -37,7 +37,7 @@ func authorHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func authorsHandler(w http.ResponseWriter, r *http.Request){
+func authorsHandler(w http.ResponseWriter, r *http.Request) {
 	var authorsErr error
 
 	var authors []models.Author
@@ -46,7 +46,7 @@ func authorsHandler(w http.ResponseWriter, r *http.Request){
 		authorsErr = errors.New("authors not found")
 	}
 
-	order :=  make(map[rune][]models.Author)
+	order := make(map[rune][]models.Author)
 	for _, author := range authors {
 		parts := strings.Fields(author.Name)
 		firstRune := []rune(parts[len(parts)-1])[0]
@@ -60,9 +60,9 @@ func authorsHandler(w http.ResponseWriter, r *http.Request){
 	}
 
 	err := templmanager.RenderTemplate(w, r, "authors.html", struct {
-		Order map[rune][]models.Author
+		Order      map[rune][]models.Author
 		AuthorsErr error
-	}{Order: order, AuthorsErr:authorsErr})
+	}{Order: order, AuthorsErr: authorsErr})
 	if err != nil {
 		log.Fatal(err)
 	}

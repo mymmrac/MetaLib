@@ -1,18 +1,24 @@
-{{define "headers"}}{{end}}
+{{define "headers"}}
+    <link rel="stylesheet" href="/static/css/authors.css">
+{{end}}
 {{define "scripts"}}{{end}}
 {{define "content"}}
     <div class="shadow p-1">
         {{if .AuthorsErr}}
             No authors found.
         {{else}}
-            {{range $rune, $authors := .Order}}
-                {{printf "%c" $rune}}
-                <ul>
-                    {{range $authors}}
-                        <li><a href="/author/{{.Id}}">{{.Name}}</a></li>
-                    {{end}}
-                </ul>
-            {{end}}
+            <div class="authors">
+                {{range $rune, $authors := .Order}}
+                    <div class="authors-group">
+                        {{printf "%c" $rune}}
+                        <ul class="authors-list">
+                            {{range $authors}}
+                                <li><a href="/author/{{.Id}}">{{.Name}}</a></li>
+                            {{end}}
+                        </ul>
+                    </div>
+                {{end}}
+            </div>
         {{end}}
     </div>
 {{end}}

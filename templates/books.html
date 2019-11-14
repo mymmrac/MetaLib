@@ -1,20 +1,33 @@
 {{define "headers"}}
-    <link class="page-item" nk rel="stylesheet" href="/static/css/utils.css">
+    <link rel="stylesheet" href="/static/css/utils.css">
+    <link rel="stylesheet" href="/static/css/books.css">
 {{end}}
 {{define "scripts"}}{{end}}
 {{define "content"}}
     <div class="shadow p-1">
         {{if .BooksErr}}
-            No books found.
+            <div class="text-center">
+                <h3>Something went wrong...</h3>
+                <h4>Try later</h4>
+            </div>
         {{else}}
-            {{range .Books}}
-                <div>
-                    <img src="{{.Cover}}" alt="{{.Name}}" width="200">
-                    <a href="/book/{{.Id}}">{{.Name}}</a>
-                </div>
-            {{else}}
-                No books found.
-            {{end}}
+            <div class="book-list">
+                {{range .Books}}
+                    <div class="book">
+                        <a href="/book/{{.Id}}"><img src="{{.Cover}}" alt="{{.Name}}"></a>
+                        <div class="book-info text-center">
+                            <a href="/book/{{.Id}}">{{.Name}}</a>
+                            <br>
+                            <small>({{.Year}}) <a href="/author/{{.AuthorId}}">{{.Author.Name}}</a></small>
+                        </div>
+                    </div>
+                {{else}}
+                    <h3 class="text-center">
+                        No books found.
+                    </h3>
+                {{end}}
+            </div>
+
             <nav>
                 <div class="pagination">
                     <a class="page-item" href="?page=1"><span>&#171;</span></a>

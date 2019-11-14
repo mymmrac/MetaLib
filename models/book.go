@@ -6,15 +6,16 @@ import (
 )
 
 type Book struct {
-	Id       int
-	Name     string
-	Year     int
-	Rating   float64
-	GenreId  int
-	Genre    *Genre
-	AuthorId int
-	Author   *Author
-	Cover    string
+	Id          int
+	Name        string
+	Year        int
+	Rating      float64
+	GenreId     int
+	Genre       *Genre
+	AuthorId    int
+	Author      *Author
+	Cover       string
+	Description string
 }
 
 func GetBookById(id int) (*Book, error) {
