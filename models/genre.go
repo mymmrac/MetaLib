@@ -10,12 +10,12 @@ type Genre struct {
 	Name string
 }
 
-func GetGenreById(id int) (*Genre, error) {
+func GetGenreById(id uint) (*Genre, error) {
 	var genre Genre
 	notExist := utils.DB.First(&genre, id).RecordNotFound()
 	if notExist {
 		return nil, errors.New("genre not exist")
-	}else{
+	} else {
 		return &genre, nil
 	}
 }

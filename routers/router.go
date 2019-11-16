@@ -31,13 +31,12 @@ func NewRouter() *mux.Router {
 	r.HandleFunc("/search", searchHandler).Methods("GET")
 
 	r.HandleFunc("/func/star", starHandler).Methods("POST")
+	r.HandleFunc("/func/setStatus", setStatusHandler).Methods("POST")
 
 	r.NotFoundHandler = http.HandlerFunc(NotFoundHandler)
 
 	fs := http.FileServer(http.Dir("./static/"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
-
-	//models.GetBookById(1) // REMOVE
 
 	return r
 }

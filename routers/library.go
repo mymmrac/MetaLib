@@ -13,12 +13,12 @@ import (
 
 func LibraryHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	libraryId, err := strconv.Atoi(vars["id"])
+	libraryId, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
 		log.Error(err)
 	}
 
-	library, libraryErr := models.GetLibraryById(libraryId)
+	library, libraryErr := models.GetLibraryById(uint(libraryId))
 
 	err = templmanager.RenderTemplate(w, r, "library.html", struct {
 		Library    *models.Library
@@ -38,7 +38,7 @@ func librariesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := templmanager.RenderTemplate(w, r, "libraries.html", struct {
-		Libraries  []models.Library
+		Libraries    []models.Library
 		LibrariesErr error
 	}{Libraries: libraries, LibrariesErr: librariesErr})
 	if err != nil {

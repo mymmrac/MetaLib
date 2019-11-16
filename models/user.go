@@ -16,10 +16,17 @@ const (
 )
 
 type User struct {
-	Id       int
+	Id       uint
 	Uid      string
 	Status   UserStatus `gorm:"-"`
 	Username string
+}
+
+type UserBook struct {
+	Id     uint
+	BookId uint
+	UserId uint
+	Status int
 }
 
 type UserErrorCode int
@@ -51,6 +58,7 @@ func GetUser(session *sessions.Session) (*User, error) {
 	if ok {
 		user, ok = userVal.(*User)
 		if !ok {
+			session.Values["user"] = User{}
 			return nil, &UserError{"Convert to user failed", ConvertFailed}
 		}
 		if user.Status != NoLogin && user.Status != Registration {
@@ -64,8 +72,8 @@ func GetUser(session *sessions.Session) (*User, error) {
 	return user, nil
 }
 
-func GetUserR(r *http.Request) (*User, error) {
-	session := utils.GetSession(r)
+func GetUserRW(r *http.Request, w http.ResponseWriter) (*User, error) {
+	session := utils.GetSession(r, w)
 
 	user, err := GetUser(session)
 	if err != nil {

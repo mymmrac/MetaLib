@@ -15,7 +15,7 @@ var templates map[string]*template.Template
 const mainTemplateString = `{{define "main" }} {{ template "base" . }} {{ end }}`
 
 type templateConfig struct {
-	TemplateLayoutPath  string
+	TemplateLayoutPath   string
 	TemplateIncludePaths []string
 }
 
@@ -82,7 +82,7 @@ func LoadTemplates() (err error) {
 
 // Renders template
 func RenderTemplate(w http.ResponseWriter, r *http.Request, name string, data interface{}) error {
-	session := utils.GetSession(r)
+	session := utils.GetSession(r, w)
 
 	user, err := models.GetUser(session)
 	if err != nil {

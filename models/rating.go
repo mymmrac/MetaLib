@@ -1,8 +1,8 @@
 package models
 
 type Rating struct {
-	Id     int
-	BookId int
-	UserId int
+	Id     uint
+	BookId uint
+	UserId uint
 	Rating int
 }

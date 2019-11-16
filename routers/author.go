@@ -20,7 +20,7 @@ func authorHandler(w http.ResponseWriter, r *http.Request) {
 		log.Error(err)
 	}
 
-	author, authorErr := models.GetAuthorById(authorId)
+	author, authorErr := models.GetAuthorById(uint(authorId))
 	var books []models.Book
 
 	if authorErr == nil {

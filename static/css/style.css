@@ -54,6 +54,10 @@ a:hover {
     padding: 1rem;
 }
 
+.hidden {
+    display: none !important;
+}
+
 /* Header */
 
 .top-box {

@@ -11,10 +11,34 @@
                         url: "/func/star",
                         data: $("#rating-form").serialize(),
                         success: function () {
-                            alert("Voted");
+                            console.log("Voted");
                         }
                     });
                 }
+            });
+
+            $(".book-status-btn").click(function () {
+                let active = $(this).hasClass("active");
+                $(".book-status-btn").removeClass("active");
+                if (!active) {
+                    $(this).addClass("active");
+                }
+
+                let status;
+                if (active) {
+                    status = 0;
+                } else {
+                    status = $(this).data("status");
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/func/setStatus",
+                    data: "status=" + status + "&book-id={{.Book.Id}}",
+                    success: function () {
+                        console.log("Status set")
+                    }
+                });
             });
         });
     </script>
@@ -26,6 +50,8 @@
         {{else}}
             {{$r := .UserRating}}
             {{$rs := .RatingStars}}
+            {{$isUser := .IsUser}}
+            {{$bs := .BookStatus}}
             {{with .Book}}
                 <div class="book">
                     <div class="book-info">
@@ -35,17 +61,36 @@
                                 <span class="rating-number">Rating: {{.Rating}}</span>
                                 {{/*                                <span class="rating-votes">Votes: {{0}}</span>*/}}
                             </div>
-                            <div class="stars">
-                                <form id="rating-form">
-                                    <input type="hidden" name="book-id" value="{{.Id}}">
-                                    {{range $rs}}
-                                        <input type="radio" name='rating' id="star{{.}}" class="star-inp" value="{{.}}"
-                                               {{if eq $r .}}checked{{end}}/>
-                                        <label for="star{{.}}"><span>&#9733;</span> </label>
-                                    {{end}}
-                                </form>
-                            </div>
+                            {{if $isUser}}
+                                <div class="stars">
+                                    <form id="rating-form">
+                                        <input type="hidden" name="book-id" value="{{.Id}}">
+                                        {{range $rs}}
+                                            <input type="radio" name='rating' id="star{{.}}" class="star-inp"
+                                                   value="{{.}}"
+                                                   {{if eq $r .}}checked{{end}}/>
+                                            <label for="star{{.}}"><span>&#9733;</span> </label>
+                                        {{end}}
+                                    </form>
+                                </div>
+                            {{end}}
                         </div>
+                        {{if $isUser}}
+                            <div class="user-book-status">
+                                <button type="button" data-status="1"
+                                        class="book-status-btn{{if eq $bs 1}} active{{end}}">Read
+                                </button>
+                                <button type="button" data-status="2"
+                                        class="book-status-btn{{if eq $bs 2}} active{{end}}">Will read
+                                </button>
+                                <button type="button" data-status="3"
+                                        class="book-status-btn{{if eq $bs 3}} active{{end}}">Already read
+                                </button>
+                                <button type="button" data-status="4"
+                                        class="book-status-btn{{if eq $bs 4}} active{{end}}">Will not read
+                                </button>
+                            </div>
+                        {{end}}
                         <p>Author: <a href="/author/{{.Author.Id}}">{{.Author.Name}}</a></p>
                         <p>Genre: {{.Genre.Name}}</p>
                         <p>Year: {{.Year}}</p>

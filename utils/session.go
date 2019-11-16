@@ -8,12 +8,19 @@ import (
 )
 
 var Store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+
 //var Store = sessions.NewCookieStore(securecookie.GenerateRandomKey(32))
 
-func GetSession(r *http.Request) *sessions.Session {
+func GetSession(r *http.Request, w http.ResponseWriter) *sessions.Session {
 	session, err := Store.Get(r, "session")
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
+		session.Options.MaxAge = -1
+
+		err = session.Save(r, w)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	return session
 }

@@ -11,7 +11,7 @@ import (
 )
 
 func profileHandler(w http.ResponseWriter, r *http.Request) {
-	user, err := models.GetUserR(r)
+	user, err := models.GetUserRW(r, w)
 	if err != nil {
 		http.Redirect(w, r, "/", 302)
 		return
@@ -26,9 +26,9 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	session := utils.GetSession(r)
+	session := utils.GetSession(r, w)
 
-	session.Values["user"] = models.User{}
+	session.Options.MaxAge = -1
 	err := session.Save(r, w)
 	if err != nil {
 		log.Fatal(err)
@@ -38,7 +38,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func registerGetHandler(w http.ResponseWriter, r *http.Request) {
-	session := utils.GetSession(r)
+	session := utils.GetSession(r, w)
 
 	user, err := models.GetUser(session)
 	if err != nil {
@@ -79,7 +79,7 @@ func registerPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if usernameRe.MatchString(username) {
-		session := utils.GetSession(r)
+		session := utils.GetSession(r, w)
 
 		user, err := models.GetUser(session)
 		if err != nil {
@@ -148,7 +148,7 @@ func registerPostHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func authHandler(w http.ResponseWriter, r *http.Request) {
-	session := utils.GetSession(r)
+	session := utils.GetSession(r, w)
 
 	token := r.PostFormValue("token")
 	err := utils.VerifyGoogleID(token)

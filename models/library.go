@@ -6,18 +6,18 @@ import (
 )
 
 type City struct {
-	Id uint
+	Id   uint
 	Name string
 }
 
 type Library struct {
-	Id uint
-	Name string
+	Id     uint
+	Name   string
 	CityId uint
-	City City
+	City   City
 }
 
-func GetLibraryById(id int) (*Library, error)  {
+func GetLibraryById(id uint) (*Library, error) {
 	var library Library
 	notExist := utils.DB.Set("gorm:auto_preload", true).First(&library, id).RecordNotFound()
 	if notExist {

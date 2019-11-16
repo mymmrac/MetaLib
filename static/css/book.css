@@ -18,6 +18,26 @@
     max-width: 700px;
 }
 
+.user-book-status {
+    display: grid;
+    grid-gap: 0.2rem;
+    grid-template-columns: 7rem 7rem;
+}
+
+.book-status-btn {
+    background: white;
+    border: none;
+    box-shadow: var(--shadow);
+}
+
+.book-status-btn:hover {
+    box-shadow: var(--shadow-red);
+}
+
+.book-status-btn.active {
+    box-shadow: var(--shadow-active);
+}
+
 /* Rating */
 
 .stars {

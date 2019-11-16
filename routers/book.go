@@ -13,20 +13,20 @@ import (
 
 func bookHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	bookId, err := strconv.Atoi(vars["id"])
+	bookId, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
 		log.Error(err)
 	}
 
-	book, bookErr := models.GetBookById(bookId)
+	book, bookErr := models.GetBookById(uint(bookId))
 
 	var userRatingNumber int
+	var userBookStatus int
 
-	session := utils.GetSession(r)
+	session := utils.GetSession(r, w)
 	user, err := models.GetUser(session)
-	if err != nil || user.Status != models.Logged {
-		userRatingNumber = 0
-	} else {
+	isUserLogged := err == nil && user.Status == models.Logged
+	if isUserLogged && user != nil {
 		var userRating models.Rating
 		userRatingNotFound := utils.DB.Where("user_id = ? and book_id = ?", user.Id, bookId).First(&userRating).RecordNotFound()
 
@@ -34,6 +34,15 @@ func bookHandler(w http.ResponseWriter, r *http.Request) {
 			userRatingNumber = 0
 		} else {
 			userRatingNumber = userRating.Rating
+		}
+
+		var userBook models.UserBook
+		userBookNotFound := utils.DB.Where("user_id = ? and book_id = ?", user.Id, bookId).First(&userBook).RecordNotFound()
+
+		if userBookNotFound {
+			userBookStatus = 0
+		} else {
+			userBookStatus = userBook.Status
 		}
 	}
 
@@ -45,9 +54,11 @@ func bookHandler(w http.ResponseWriter, r *http.Request) {
 	err = templmanager.RenderTemplate(w, r, "book.html", struct {
 		Book        *models.Book
 		BookErr     error
+		IsUser      bool
 		UserRating  int
 		RatingStars []int
-	}{Book: book, BookErr: bookErr, UserRating: userRatingNumber, RatingStars: ratingStars})
+		BookStatus  int
+	}{Book: book, BookErr: bookErr, IsUser: isUserLogged, UserRating: userRatingNumber, RatingStars: ratingStars, BookStatus: userBookStatus})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -127,38 +138,67 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func starHandler(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
+	if err := utils.ParseForm(r); err != nil {
 		log.Error(err)
 		return
 	}
 
-	ratingStr := r.PostFormValue("rating")
-	if len(ratingStr) < 0 {
-		return
-	}
-	rating, err := strconv.Atoi(ratingStr)
-	if err != nil {
-		log.Error(err)
+	rating, ok := utils.FormGetInt(r, "rating")
+	if !ok {
+		log.Error("Failed to get rating")
 		return
 	}
 
-	bookIdSrt := r.PostFormValue("book-id")
-	if len(bookIdSrt) < 0 {
-		return
-	}
-	bookId, err := strconv.Atoi(bookIdSrt)
-	if err != nil {
-		log.Error(err)
+	bookId, ok := utils.FormGetUint(r, "book-id")
+	if !ok {
+		log.Error("Failed to get book id")
 		return
 	}
 
-	user, err := models.GetUserR(r)
+	user, err := models.GetUserRW(r, w)
 	if err != nil {
 		log.Error(err)
 		return
 	}
 
 	err = utils.DB.Where(models.Rating{UserId: user.Id, BookId: bookId}).Assign(models.Rating{Rating: rating}).FirstOrCreate(&models.Rating{}).Error
+	if err != nil {
+		log.Error(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func setStatusHandler(w http.ResponseWriter, r *http.Request) {
+	if err := utils.ParseForm(r); err != nil {
+		log.Error(err)
+		return
+	}
+
+	status, ok := utils.FormGetInt(r, "status")
+	if !ok {
+		log.Error("Failed to get status")
+		return
+	}
+
+	bookId, ok := utils.FormGetUint(r, "book-id")
+	if !ok {
+		log.Error("Failed to get book id")
+		return
+	}
+
+	user, err := models.GetUserRW(r, w)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	if status == 0 {
+		err = utils.DB.Model(&models.UserBook{}).Where(&models.UserBook{UserId: user.Id, BookId: bookId}).Update("status", 0).Error
+	} else {
+		err = utils.DB.Where(&models.UserBook{UserId: user.Id, BookId: bookId}).Assign(&models.UserBook{Status: status}).FirstOrCreate(&models.UserBook{}).Error
+	}
+
 	if err != nil {
 		log.Error(err)
 	}

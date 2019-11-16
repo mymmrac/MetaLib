@@ -6,19 +6,19 @@ import (
 )
 
 type Book struct {
-	Id          int
+	Id          uint
 	Name        string
 	Year        int
 	Rating      float64
-	GenreId     int
+	GenreId     uint
 	Genre       *Genre
-	AuthorId    int
+	AuthorId    uint
 	Author      *Author
 	Cover       string
 	Description string
 }
 
-func GetBookById(id int) (*Book, error) {
+func GetBookById(id uint) (*Book, error) {
 	var book Book
 	notExist := utils.DB.Set("gorm:auto_preload", true).First(&book, id).RecordNotFound()
 	if notExist {
