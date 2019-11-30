@@ -1,14 +1,14 @@
-.authors-list {
+.entities-list {
     list-style: none;
     padding-left: 0.8rem;
 }
 
-.authors-group {
+.entities-group {
     min-width: 240px;
 
 }
 
-.authors {
+.entities {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;

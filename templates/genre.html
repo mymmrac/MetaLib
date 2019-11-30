@@ -2,12 +2,10 @@
 {{define "scripts"}}{{end}}
 {{define "content"}}
     <div class="shadow p-1">
-        {{if .AuthorErr}}
-            {{.AuthorErr}}
+        {{if .GenreErr}}
+            {{.GenreErr}}
         {{else}}
-            {{with .Author}}
-                <h3>{{.Name}}</h3>
-            {{end}}
+            <h3>{{.Genre.Name}}</h3>
             <br>
             Book list:
             <ol>

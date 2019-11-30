@@ -65,7 +65,7 @@ func bookHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func booksHandler(w http.ResponseWriter, r *http.Request) {
-	perPage := 4
+	perPage := 20
 	displayPages := 7
 
 	var count int

@@ -1,0 +1,7 @@
+.book-list .book-group {
+    display: none;
+}
+
+.book-list .book-group.active {
+    display: block;
+}

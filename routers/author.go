@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"sort"
 	"strconv"
-	"strings"
 )
 
 func authorHandler(w http.ResponseWriter, r *http.Request) {
@@ -28,9 +27,9 @@ func authorHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = templmanager.RenderTemplate(w, r, "author.html", struct {
-		Author *models.Author
-		Books  []models.Book
-		Err    error
+		Author    *models.Author
+		Books     []models.Book
+		AuthorErr error
 	}{author, books, authorErr})
 	if err != nil {
 		log.Fatal(err)
@@ -48,8 +47,7 @@ func authorsHandler(w http.ResponseWriter, r *http.Request) {
 
 	order := make(map[rune][]models.Author)
 	for _, author := range authors {
-		parts := strings.Fields(author.Name)
-		firstRune := []rune(parts[len(parts)-1])[0]
+		firstRune := (rune)(author.Name[0])
 		order[firstRune] = append(order[firstRune], author)
 	}
 

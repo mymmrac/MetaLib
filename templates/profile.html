@@ -1,9 +1,52 @@
-{{define "headers"}}{{end}}
-{{define "scripts"}}{{end}}
+{{define "headers"}}
+    <link rel="stylesheet" href="/static/css/profile.css">
+{{end}}
+{{define "scripts"}}
+    <script>
+        $(document).ready(function () {
+            $(".status-btn").click(function () {
+                let gId = $(this).data("group");
+                $(".book-group").removeClass("active");
+                $("#g" + gId).addClass("active");
+            });
+        });
+    </script>
+{{end}}
 {{define "content"}}
     <div class="shadow p-1">
-        {{with.User}}
-            Username: {{.Username}}
-        {{end}}
+        <h3>{{.User.Username}}</h3>
+        <a href="/logout">Logout</a>
+        <div class="status-list">
+            <button class="status-btn active" data-group="1">Read</button>
+            <button class="status-btn" data-group="2">Will read</button>
+            <button class="status-btn" data-group="3">Already read</button>
+            <button class="status-btn" data-group="4">Will not read</button>
+        </div>
+        <div class="book-list">
+            <div class="book-group active" id="g1">
+                {{range .Books.Read}}
+                    {{.Book.Name}}
+                    <br>
+                {{end}}
+            </div>
+            <div class="book-group" id="g2">
+                {{range .Books.WillRead}}
+                    {{.Book.Name}}
+                    <br>
+                {{end}}
+            </div>
+            <div class="book-group" id="g3">
+                {{range .Books.AlreadyRead}}
+                    {{.Book.Name}}
+                    <br>
+                {{end}}
+            </div>
+            <div class="book-group" id="g4">
+                {{range .Books.WillNotRead}}
+                    {{.Book.Name}}
+                    <br>
+                {{end}}
+            </div>
+        </div>
     </div>
 {{end}}

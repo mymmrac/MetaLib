@@ -4,16 +4,16 @@
 {{define "scripts"}}{{end}}
 {{define "content"}}
     <div class="shadow p-1">
-        {{if .AuthorsErr}}
-            No authors found.
+        {{if .GenresErr}}
+            No genres found.
         {{else}}
             <div class="entities">
-                {{range $rune, $authors := .Order}}
+                {{range $rune, $genres := .Order}}
                     <div class="entities-group">
                         {{printf "%c" $rune}}
                         <ul class="entities-list">
-                            {{range $authors}}
-                                <li><a href="/author/{{.Id}}">{{.Name}}</a></li>
+                            {{range $genres}}
+                                <li><a href="/genre/{{.Id}}">{{.Name}}</a></li>
                             {{end}}
                         </ul>
                     </div>

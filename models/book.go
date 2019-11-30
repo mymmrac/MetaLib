@@ -18,6 +18,16 @@ type Book struct {
 	Description string
 }
 
+type BookStatus int
+
+const (
+	NoStatus BookStatus = iota
+	Read
+	WillRead
+	AlreadyRead
+	WillNotRead
+)
+
 func GetBookById(id uint) (*Book, error) {
 	var book Book
 	notExist := utils.DB.Set("gorm:auto_preload", true).First(&book, id).RecordNotFound()

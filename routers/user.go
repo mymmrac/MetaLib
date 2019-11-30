@@ -17,9 +17,28 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var read, willRead, alreadyRead, willNotRead []models.UserBook
+	utils.DB.Where("user_id = ? and status = ?", user.Id, models.Read).Preload("Book").Find(&read)
+	utils.DB.Where("user_id = ? and status = ?", user.Id, models.WillRead).Preload("Book").Find(&willRead)
+	utils.DB.Where("user_id = ? and status = ?", user.Id, models.AlreadyRead).Preload("Book").Find(&alreadyRead)
+	utils.DB.Where("user_id = ? and status = ?", user.Id, models.WillNotRead).Preload("Book").Find(&willNotRead)
+
+	books := struct {
+		Read        []models.UserBook
+		WillRead    []models.UserBook
+		AlreadyRead []models.UserBook
+		WillNotRead []models.UserBook
+	}{read, willRead, alreadyRead, willNotRead}
+
 	err = templmanager.RenderTemplate(w, r, "profile.html", struct {
-		User models.User
-	}{User: *user})
+		User  models.User
+		Books struct {
+			Read        []models.UserBook
+			WillRead    []models.UserBook
+			AlreadyRead []models.UserBook
+			WillNotRead []models.UserBook
+		}
+	}{User: *user, Books: books})
 	if err != nil {
 		log.Fatal(err)
 	}

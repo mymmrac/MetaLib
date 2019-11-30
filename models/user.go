@@ -25,7 +25,9 @@ type User struct {
 type UserBook struct {
 	Id     uint
 	BookId uint
+	Book   *Book
 	UserId uint
+	User   *User
 	Status int
 }
 
