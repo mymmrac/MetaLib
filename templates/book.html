@@ -31,6 +31,7 @@
                     status = $(this).data("status");
                 }
 
+                {{if .IsUser}}
                 $.ajax({
                     type: "POST",
                     url: "/func/setStatus",
@@ -39,6 +40,7 @@
                         console.log("Status set")
                     }
                 });
+                {{end}}
             });
         });
     </script>

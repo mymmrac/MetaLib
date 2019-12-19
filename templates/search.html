@@ -3,5 +3,10 @@
 {{define "content"}}
     <div class="shadow p-1">
         Search for: {{.SearchFor}}
+        <hr>
+        {{range .Books}}
+            <a href="/book/{{.Id}}">{{.Name}}</a>
+            <br>
+        {{end}}
     </div>
 {{end}}

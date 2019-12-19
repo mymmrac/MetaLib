@@ -31,6 +31,14 @@ type UserBook struct {
 	Status int
 }
 
+type UserTop struct {
+	Id     uint
+	BookId uint
+	Book   *Book
+	UserId uint
+	Pos    int
+}
+
 type UserErrorCode int
 
 const (
@@ -88,4 +96,17 @@ func GetUserRW(r *http.Request, w http.ResponseWriter) (*User, error) {
 		return nil, &UserError{"User not logged", UserNotLogged}
 	}
 	return user, nil
+}
+
+func (u *User)GetRecommendations() ([]*Book, error) {
+	var userTops []*UserTop
+	err := utils.DB.Where("user_id = ?", u.Id).Set("gorm:auto_preload", true).Find(&userTops).Error
+	if err != nil {
+		return nil, err
+	}
+	recommended := make([]*Book, len(userTops))
+	for _, ut  := range userTops {
+		recommended[ut.Pos] = ut.Book
+	}
+	return recommended, nil
 }

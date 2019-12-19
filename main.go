@@ -6,10 +6,12 @@ import (
 	"MetaLib/templmanager"
 	"MetaLib/utils"
 	"encoding/gob"
+	"github.com/robfig/cron/v3"
 	log "github.com/sirupsen/logrus"
 	"github.com/t-tomalak/logrus-easy-formatter"
 	"net/http"
 	"os"
+	"os/exec"
 )
 
 func init() {
@@ -34,7 +36,7 @@ func main() {
 
 	utils.InitGoogle()
 
-	templmanager.SetTemplateConfig( "templates/layout/", "templates/", "templates/errors/")
+	templmanager.SetTemplateConfig("templates/layout/", "templates/", "templates/errors/")
 	err = templmanager.LoadTemplates()
 	if err != nil {
 		log.Fatal(err)
@@ -42,6 +44,19 @@ func main() {
 
 	r := routers.NewRouter()
 	http.Handle("/", r)
+
+	c := cron.New()
+	_, err = c.AddFunc("@every 10m", func() { // FIX time in production
+		err = exec.Command("venv/bin/python", "pyscripts/recomendation.py").Run()
+		if err != nil {
+			log.Error(err)
+		}
+		log.Info("Recommendations recalculated")
+	})
+	if err != nil {
+		log.Error(err)
+	}
+	c.Start()
 
 	log.Info("Start listening on port: " + port)
 	err = http.ListenAndServe(":"+port, nil)

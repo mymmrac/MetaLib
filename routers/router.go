@@ -1,11 +1,13 @@
 package routers
 
 import (
+	"MetaLib/models"
 	"MetaLib/templmanager"
-	"fmt"
+	"MetaLib/utils"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"strings"
 )
 
 func NewRouter() *mux.Router {
@@ -72,11 +74,14 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	query := r.FormValue("oq")
-	fmt.Println(query)
+
+	var books []models.Book
+	utils.DB.Raw("SELECT * FROM books WHERE to_tsvector(name) @@ to_tsquery('" + strings.ReplaceAll(query, " ", "+") + ":*')").Scan(&books)
 
 	err := templmanager.RenderTemplate(w, r, "search.html", struct {
 		SearchFor string
-	}{SearchFor: query})
+		Books     []models.Book
+	}{SearchFor: query, Books: books})
 	if err != nil {
 		log.Fatal(err)
 	}

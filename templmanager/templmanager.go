@@ -96,11 +96,19 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, name string, data in
 		user = &models.User{}
 	}
 
+	var recommendedBooks []*models.Book
+	if user.Status == models.Logged {
+		recommendedBooks, err = user.GetRecommendations()
+	}else {
+		// FIX
+	}
+
 	ctxData := struct {
-		GoogleClientID string
-		User           *models.User
-		Data           interface{}
-	}{utils.GoogleClientId, user, data}
+		GoogleClientID  string
+		User            *models.User
+		RecommendedBooks []*models.Book
+		Data            interface{}
+	}{GoogleClientID: utils.GoogleClientId, User: user, RecommendedBooks: recommendedBooks, Data: data}
 
 	tmpl, ok := templates[name]
 	if !ok {

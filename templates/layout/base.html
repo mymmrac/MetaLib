@@ -19,7 +19,7 @@
 
     <div class="top-box container">
         <div class="logo">
-            <img src="/static/img/MetaLib.svg" alt="" class="logo-img">
+            <img src="/static/img/MetaLib.svg" alt="MetaLib" class="logo-img">
             <h1 class="logo-name">MetaLib</h1>
         </div>
         <div class="user" id="user">
@@ -40,11 +40,11 @@
     </div>
 
     <header class="header container" id="header">
-        <div class="header-item"><a href="/">Home</a></div>
-        <div class="header-item"><a href="/books">Books</a></div>
-        <div class="header-item"><a href="/authors">Authors</a></div>
-        <div class="header-item"><a href="/genres">Genres</a></div>
-        <div class="header-item"><a href="/libraries">Libraries</a></div>
+        <div class="header-item" id="nav-home"><a href="/">Home</a></div>
+        <div class="header-item" id="nav-books"><a href="/books">Books</a></div>
+        <div class="header-item" id="nav-authors"><a href="/authors">Authors</a></div>
+        <div class="header-item" id="nav-genres"><a href="/genres">Genres</a></div>
+        <div class="header-item" id="nav-libraries"><a href="/libraries">Libraries</a></div>
     </header>
 
     <script>
@@ -72,6 +72,21 @@
         <input type="submit" value="" class="search-btn">
     </form>
 
+    <div class="container">
+        <div class="recommendation">
+            {{range .RecommendedBooks}}
+                <div class="book">
+                    <a href="/book/{{.Id}}"><img src="{{.Cover}}" alt="{{.Name}}"></a>
+                    <a class="text-center book-title" href="/book/{{.Id}}">{{.Name}}</a>
+                </div>
+            {{else}}
+                <h3 class="text-center">
+                    No books found.
+                </h3>
+            {{end}}
+        </div>
+    </div>
+
     <div class="content container">
         {{template "content" .Data}}
     </div>
@@ -83,7 +98,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: 'func/auth',
+                url: '/func/auth',
                 data: `token=${token}`,
                 success: function (data) {
                     if (data === "logged") {
@@ -118,6 +133,28 @@
                 auth2.attachClickHandler(loginBtn, {}, onSignIn, onFailSignIn);
                 {{end}}
             });
+
+            let nav;
+            switch (location.pathname) {
+                case "/":
+                    nav = "#nav-home";
+                    break;
+                case "/books":
+                    nav = "#nav-books";
+                    break;
+                case "/authors":
+                    nav = "#nav-authors";
+                    break;
+                case "/genres":
+                    nav = "#nav-genres";
+                    break;
+                case "/libraries":
+                    nav = "#nav-libraries";
+                    break;
+            }
+            if (nav) {
+                $(nav).addClass("active")
+            }
         });
     </script>
     {{template "scripts" .Data}}

@@ -7,7 +7,8 @@ require (
 	github.com/gorilla/mux v1.7.3
 	github.com/gorilla/sessions v1.2.0
 	github.com/jinzhu/gorm v1.9.11
-	github.com/lib/pq v1.2.0
+	github.com/lib/pq v1.2.0 // indirect
+	github.com/robfig/cron/v3 v3.0.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/t-tomalak/logrus-easy-formatter v0.0.0-20190728154248-58b9ff8bfed7
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45 // indirect

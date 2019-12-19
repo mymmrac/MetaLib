@@ -1,7 +1,26 @@
+.logout {
+    font-size: 0.8rem;
+}
+
 .book-list .book-group {
     display: none;
 }
 
 .book-list .book-group.active {
     display: block;
+}
+
+.status-btn {
+    border: none;
+    box-shadow: var(--shadow);
+    background: white;
+    margin: 0.1rem;
+}
+
+.status-btn.active {
+    box-shadow: var(--shadow-active)
+}
+
+.status-list {
+    margin-bottom: 0.4rem;
 }
