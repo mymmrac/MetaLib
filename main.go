@@ -47,10 +47,14 @@ func main() {
 
 	c := cron.New()
 	_, err = c.AddFunc("@every 10m", func() { // FIX time in production
-		err = exec.Command("venv/bin/python", "pyscripts/recomendation.py").Run()
-		if err != nil {
+		if err := exec.Command("venv/bin/python", "pyscripts/recommendation.py").Run(); err != nil {
 			log.Error(err)
 		}
+
+		if err := utils.DB.Exec("UPDATE books SET rating = r.avg_rating FROM (SELECT book_id, ROUND(AVG(rating), 2) AS avg_rating FROM ratings GROUP BY book_id) AS r WHERE id = r.book_id").Error; err != nil {
+			log.Error(err)
+		}
+
 		log.Info("Recommendations recalculated")
 	})
 	if err != nil {
@@ -59,8 +63,7 @@ func main() {
 	c.Start()
 
 	log.Info("Start listening on port: " + port)
-	err = http.ListenAndServe(":"+port, nil)
-	if err != nil {
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 }

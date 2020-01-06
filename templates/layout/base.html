@@ -17,6 +17,10 @@
     </head>
     <body>
 
+    <script>
+        let getParams = new URLSearchParams(window.location.search)
+    </script>
+
     <div class="top-box container">
         <div class="logo">
             <img src="/static/img/MetaLib.svg" alt="MetaLib" class="logo-img">
@@ -41,11 +45,20 @@
 
     <header class="header container" id="header">
         <div class="header-item" id="nav-home"><a href="/">Home</a></div>
-        <div class="header-item" id="nav-books"><a href="/books">Books</a></div>
+        {{/*        <div class="header-item" id="nav-books"><a href="/books">Books</a></div>*/}}
         <div class="header-item" id="nav-authors"><a href="/authors">Authors</a></div>
         <div class="header-item" id="nav-genres"><a href="/genres">Genres</a></div>
         <div class="header-item" id="nav-libraries"><a href="/libraries">Libraries</a></div>
     </header>
+
+    <form action="/search" method="GET" class="search-box container">
+        <input type="text" name="oq" class="search-bar" placeholder="Search...">
+        <a href="/search" class="filter-btn"></a>
+        <input type="submit" value="" class="search-btn">
+        <input type="hidden" name="g">
+        <input type="hidden" name="a">
+        <input type="hidden" name="y">
+    </form>
 
     <script>
         let minWidth = 516;
@@ -66,11 +79,6 @@
             }
         };
     </script>
-
-    <form action="/search" method="GET" class="search-box container">
-        <input type="text" name="oq" class="search-bar" placeholder="Search...">
-        <input type="submit" value="" class="search-btn">
-    </form>
 
     <div class="container">
         <div class="recommendation">
@@ -152,8 +160,22 @@
                     nav = "#nav-libraries";
                     break;
             }
+
             if (nav) {
                 $(nav).addClass("active")
+            }
+
+            if (getParams.has("oq")) {
+                $("input[name=oq]").val(getParams.get("oq"))
+            }
+            if (getParams.has("g")) {
+                $("input[name=g]").val(getParams.get("g"))
+            }
+            if (getParams.has("a")) {
+                $("input[name=a]").val(getParams.get("a"))
+            }
+            if (getParams.has("y")) {
+                $("input[name=y]").val(getParams.get("y"))
             }
         });
     </script>

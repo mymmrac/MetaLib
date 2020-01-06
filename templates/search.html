@@ -1,12 +1,56 @@
-{{define "headers"}}{{end}}
-{{define "scripts"}}{{end}}
+{{define "headers"}}
+    <link rel="stylesheet" href="/static/css/selectize.css">
+    <link rel="stylesheet" href="/static/css/search.css">
+{{end}}
+{{define "scripts"}}
+    <script src="/static/libs/selectize.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#genre-filter, #author-filter, #year-filter").selectize({
+                sortField: "text"
+            });
+        });
+    </script>
+{{end}}
 {{define "content"}}
-    <div class="shadow p-1">
+    <div class="shadow p-1 mb-1">
         Search for: {{.SearchFor}}
-        <hr>
+        <hr class="separator">
+        <form action="" method="GET" class="filter-container">
+            <input type="hidden" name="oq" value="{{.SearchFor}}">
+
+            {{$fg := .FilterGenre}}
+            {{$fa := .FilterAuthor}}
+            {{$fy := .FilterYear}}
+
+            <select id="genre-filter" placeholder="Genre" name="g">
+                <option value="">Genre</option>
+                {{range .GenreList}}
+                    <option value="{{.Id}}"{{if eq .Id $fg}} selected{{end}}>{{.Name}}</option>
+                {{end}}
+            </select>
+            <select id="author-filter" placeholder="Author" name="a">
+                <option value="">Author</option>
+                {{range .AuthorList}}
+                    <option value="{{.Id}}"{{if eq .Id $fa}} selected{{end}}>{{.Name}}</option>
+                {{end}}
+            </select>
+            <select id="year-filter" placeholder="Year" name="y">
+                <option value="">Year</option>
+                {{range .YearList}}
+                    <option value="{{.}}"{{if eq . $fy}} selected{{end}}>{{.}}</option>
+                {{end}}
+            </select>
+
+            <button type="submit" class="filter-in-btn">Filter</button>
+        </form>
+    </div>
+    <div class="shadow p-1">
         {{range .Books}}
             <a href="/book/{{.Id}}">{{.Name}}</a>
             <br>
+        {{else}}
+            Nothing found.
         {{end}}
     </div>
 {{end}}

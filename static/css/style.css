@@ -54,6 +54,10 @@ a:hover {
     padding: 1rem;
 }
 
+.mb-1 {
+    margin-bottom: 1rem;
+}
+
 .hidden {
     display: none !important;
 }
@@ -123,6 +127,8 @@ a:hover {
     margin-right: 1rem;
 }
 
+/* Search */
+
 .search-box {
     margin-top: 1.4rem !important;
     display: flex;
@@ -140,8 +146,7 @@ a:hover {
     outline: none;
 }
 
-.search-btn {
-    background: url("/static/img/search.svg") no-repeat center;
+.search-btn, .filter-btn {
     width: 2.2rem;
     height: 2.2rem;
     border: none;
@@ -149,7 +154,17 @@ a:hover {
     cursor: pointer;
 }
 
-.search-bar:hover, .search-btn:hover, .search-bar:focus {
+.search-btn {
+    background: url("/static/img/search.svg") no-repeat center;
+}
+
+.filter-btn {
+    background: url("/static/img/filter.svg") no-repeat center;
+    background-size: 70%;
+    margin-right: .5rem;
+}
+
+.search-bar:hover, .search-btn:hover, .search-bar:focus, .filter-btn:hover, .filter-btn:hover, .filter-btn:focus {
     box-shadow: var(--shadow-active);
 }
 
@@ -158,7 +173,7 @@ a:hover {
 .recommendation {
     display: grid;
     grid-gap: 0.2rem;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     box-shadow: var(--shadow);
     margin: .8rem 0;
     padding: 0.8rem 0;
@@ -180,8 +195,8 @@ a:hover {
 }
 
 .recommendation .book img {
-    width: 160px;
-    height: 224px;
+    width: 100px;
+    height: 140px;
 }
 
 /* Content */

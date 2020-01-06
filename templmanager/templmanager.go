@@ -99,15 +99,41 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, name string, data in
 	var recommendedBooks []*models.Book
 	if user.Status == models.Logged {
 		recommendedBooks, err = user.GetRecommendations()
-	}else {
-		// FIX
+		if err != nil {
+			log.Error(err)
+		}
+	}
+
+	recommendsCount := 10
+
+	if len(recommendedBooks) < recommendsCount {
+		staelNeed := recommendsCount - len(recommendedBooks)
+		var uId uint
+		if user.Status == models.Logged {
+			uId = user.Id
+		} else {
+			uId = 0
+		}
+
+		var rb []*models.Book
+		utils.DB.Raw(`SELECT b.id, b.name, b.rating, b.cover
+FROM (SELECT books.id, books.name, books.rating, books.cover
+      FROM books
+               LEFT JOIN ratings ON books.id = ratings.book_id AND ratings.user_id = ?
+      WHERE ratings.book_id IS NULL) AS b
+         LEFT JOIN user_tops ON b.id = user_tops.book_id AND user_tops.user_id = ?
+WHERE user_tops.book_id IS NULL
+ORDER BY b.rating DESC
+LIMIT ?`, uId, uId, staelNeed).Scan(&rb)
+
+		recommendedBooks = append(recommendedBooks, rb...)
 	}
 
 	ctxData := struct {
-		GoogleClientID  string
-		User            *models.User
+		GoogleClientID   string
+		User             *models.User
 		RecommendedBooks []*models.Book
-		Data            interface{}
+		Data             interface{}
 	}{GoogleClientID: utils.GoogleClientId, User: user, RecommendedBooks: recommendedBooks, Data: data}
 
 	tmpl, ok := templates[name]

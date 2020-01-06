@@ -1,0 +1,20 @@
+.filter-container {
+    display: grid;
+    grid-gap: 0.4rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.filter-in-btn {
+    border: none;
+    background: #fff;
+    box-shadow: var(--shadow);
+    height: 34px;
+}
+
+.filter-in-btn:hover {
+    box-shadow: var(--shadow-active);
+}
+
+.separator {
+    border: 1px solid var(--gray);
+}

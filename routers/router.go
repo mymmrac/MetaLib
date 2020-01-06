@@ -1,20 +1,19 @@
 package routers
 
 import (
-	"MetaLib/models"
 	"MetaLib/templmanager"
-	"MetaLib/utils"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"strings"
 )
 
 func NewRouter() *mux.Router {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", indexGetHandler).Methods("GET")
-	r.HandleFunc("/about", aboutHandler).Methods("GET")
+	//r.HandleFunc("/", indexGetHandler).Methods("GET")
+	r.HandleFunc("/", booksHandler).Methods("GET")
+
+	//r.HandleFunc("/about", aboutHandler).Methods("GET")
 
 	r.HandleFunc("/profile", profileHandler).Methods("GET")
 	r.HandleFunc("/register", registerGetHandler).Methods("GET")
@@ -22,7 +21,7 @@ func NewRouter() *mux.Router {
 	r.HandleFunc("/func/auth", authHandler).Methods("POST")
 	r.HandleFunc("/logout", logoutHandler).Methods("GET")
 
-	r.HandleFunc("/books", booksHandler).Methods("GET")
+	//r.HandleFunc("/books", booksHandler).Methods("GET")
 	r.HandleFunc("/authors", authorsHandler).Methods("GET")
 	r.HandleFunc("/genres", genresHandler).Methods("GET")
 	r.HandleFunc("/libraries", librariesHandler).Methods("GET")
@@ -45,43 +44,22 @@ func NewRouter() *mux.Router {
 	return r
 }
 
-func indexGetHandler(w http.ResponseWriter, r *http.Request) {
-	err := templmanager.RenderTemplate(w, r, "index.html", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
+//func indexGetHandler(w http.ResponseWriter, r *http.Request) {
+//	err := templmanager.RenderTemplate(w, r, "index.html", nil)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//}
 
-func aboutHandler(w http.ResponseWriter, r *http.Request) {
-	err := templmanager.RenderTemplate(w, r, "about.html", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
+//func aboutHandler(w http.ResponseWriter, r *http.Request) {
+//	err := templmanager.RenderTemplate(w, r, "about.html", nil)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//}
 
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	err := templmanager.RenderTemplate(w, r, "404.html", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func searchHandler(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		log.Error(err)
-		http.Redirect(w, r, "/", 302)
-		return
-	}
-
-	query := r.FormValue("oq")
-
-	var books []models.Book
-	utils.DB.Raw("SELECT * FROM books WHERE to_tsvector(name) @@ to_tsquery('" + strings.ReplaceAll(query, " ", "+") + ":*')").Scan(&books)
-
-	err := templmanager.RenderTemplate(w, r, "search.html", struct {
-		SearchFor string
-		Books     []models.Book
-	}{SearchFor: query, Books: books})
 	if err != nil {
 		log.Fatal(err)
 	}

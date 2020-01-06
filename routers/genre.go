@@ -23,7 +23,7 @@ func genreHandler(w http.ResponseWriter, r *http.Request) {
 	var books []models.Book
 
 	if genreErr == nil {
-		utils.DB.Where("genre_id = ?", genre.Id).Order("rating").Find(&books)
+		utils.DB.Where("genre_id = ?", genre.Id).Order("rating desc").Find(&books)
 	}
 
 	err = templmanager.RenderTemplate(w, r, "genre.html", struct {

@@ -23,7 +23,7 @@ func authorHandler(w http.ResponseWriter, r *http.Request) {
 	var books []models.Book
 
 	if authorErr == nil {
-		utils.DB.Where("author_id = ?", author.Id).Order("rating").Find(&books)
+		utils.DB.Where("author_id = ?", author.Id).Order("rating desc").Find(&books)
 	}
 
 	err = templmanager.RenderTemplate(w, r, "author.html", struct {
