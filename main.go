@@ -32,8 +32,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	utils.DB.AutoMigrate(&models.Book{}, &models.Genre{}, &models.Author{}, &models.User{})
-
 	utils.InitGoogle()
 
 	templmanager.SetTemplateConfig("templates/layout/", "templates/", "templates/errors/")

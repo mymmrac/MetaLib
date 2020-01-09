@@ -1,6 +1,7 @@
 {{define "headers"}}
     <link rel="stylesheet" href="/static/css/selectize.css">
     <link rel="stylesheet" href="/static/css/search.css">
+    <link rel="stylesheet" href="/static/css/books.css">
 {{end}}
 {{define "scripts"}}
     <script src="/static/libs/selectize.min.js"></script>
@@ -23,19 +24,19 @@
             {{$fa := .FilterAuthor}}
             {{$fy := .FilterYear}}
 
-            <select id="genre-filter" placeholder="Genre" name="g">
+            <select id="genre-filter" placeholder="Genre" name="g" style="display: none;">
                 <option value="">Genre</option>
                 {{range .GenreList}}
                     <option value="{{.Id}}"{{if eq .Id $fg}} selected{{end}}>{{.Name}}</option>
                 {{end}}
             </select>
-            <select id="author-filter" placeholder="Author" name="a">
+            <select id="author-filter" placeholder="Author" name="a" style="display: none;">
                 <option value="">Author</option>
                 {{range .AuthorList}}
                     <option value="{{.Id}}"{{if eq .Id $fa}} selected{{end}}>{{.Name}}</option>
                 {{end}}
             </select>
-            <select id="year-filter" placeholder="Year" name="y">
+            <select id="year-filter" placeholder="Year" name="y" style="display: none;">
                 <option value="">Year</option>
                 {{range .YearList}}
                     <option value="{{.}}"{{if eq . $fy}} selected{{end}}>{{.}}</option>
@@ -46,11 +47,19 @@
         </form>
     </div>
     <div class="shadow p-1">
-        {{range .Books}}
-            <a href="/book/{{.Id}}">{{.Name}}</a>
-            <br>
-        {{else}}
-            Nothing found.
-        {{end}}
+        <div class="book-list">
+            {{range .Books}}
+                <div class="book">
+                    <a href="/book/{{.Id}}"><img src="{{.Cover}}" alt="{{.Name}}"></a>
+                    <div class="book-info text-center">
+                        <a href="/book/{{.Id}}">{{.Name}}</a>
+                    </div>
+                </div>
+            {{else}}
+                <h4>
+                    No books found.
+                </h4>
+            {{end}}
+        </div>
     </div>
 {{end}}

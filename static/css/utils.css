@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    flex-direction:row;
+    flex-direction: row;
 
 }
 
@@ -18,7 +18,7 @@
     justify-content: center;
 }
 
-.pagination .page-item+.page-item{
+.pagination .page-item + .page-item {
     margin-left: 0.4rem;
 }
 
@@ -26,7 +26,7 @@
     color: var(--black);
 }
 
-.pagination .page-item:hover{
+.pagination .page-item:hover {
     box-shadow: var(--shadow-active);
 }
 

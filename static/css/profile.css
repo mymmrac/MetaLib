@@ -2,12 +2,34 @@
     font-size: 0.8rem;
 }
 
+.book-list {
+    margin-top: 1rem;
+}
+
 .book-list .book-group {
     display: none;
+    grid-gap: 0.2rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 
 .book-list .book-group.active {
-    display: block;
+    display: grid;
+}
+
+.book {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.book img {
+    width: 200px;
+    height: 280px;
+}
+
+.book .book-info {
+    margin: 1rem 0;
 }
 
 .status-btn {

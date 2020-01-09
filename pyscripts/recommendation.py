@@ -1,4 +1,3 @@
-# import psycopg2
 import numpy as np
 import os
 import pandas as pd
@@ -7,13 +6,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sqlalchemy import create_engine
 
 load_dotenv()
-
-# connection = "host=%s port=%s user=%s password=%s dbname=%s sslmode=%s" % (
-#     os.getenv("DB_HOST"), os.getenv("DB_PORT"),
-#     os.getenv("DB_USER"), os.getenv("DB_PASS"),
-#     os.getenv("DB_NAME"),
-#     os.getenv("DB_SSLMODE"))
-# conn = psycopg2.connect(connection)
 
 engine = create_engine("postgresql://%s:%s@%s:%s/%s" % (
     os.getenv("DB_USER"), os.getenv("DB_PASS"), os.getenv("DB_HOST"), os.getenv("DB_PORT"), os.getenv("DB_NAME")))
@@ -106,7 +98,6 @@ for uid in users.id:
         predictions.loc[-1] = [uid, book, i]
         predictions.index += 1
 
-# print(predictions.head())
 predictions.to_sql("user_tops", con=engine, schema="public", if_exists="replace", index_label="id")
 
 conn.close()

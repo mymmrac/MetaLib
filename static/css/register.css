@@ -13,7 +13,7 @@
     box-shadow: var(--shadow);
 }
 
-.reg-input:hover, .reg-btn:hover{
+.reg-input:hover, .reg-btn:hover {
     box-shadow: var(--shadow-active);
 }
 
@@ -21,7 +21,7 @@
     margin: 1rem 0;
 }
 
-.reg-input, .reg-btn{
+.reg-input, .reg-btn {
     font-size: 1rem;
     padding: 0.3rem;
 
