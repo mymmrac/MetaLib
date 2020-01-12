@@ -45,11 +45,11 @@ func main() {
 
 	c := cron.New()
 	_, err = c.AddFunc("@every 10m", func() { // FIX time in production
-		if err := exec.Command("venv/bin/python", "pyscripts/recommendation.py").Run(); err != nil {
+		if err := utils.DB.Exec("UPDATE books SET rating = r.avg_rating FROM (SELECT book_id, ROUND(AVG(rating), 2) AS avg_rating FROM ratings GROUP BY book_id) AS r WHERE id = r.book_id").Error; err != nil {
 			log.Error(err)
 		}
 
-		if err := utils.DB.Exec("UPDATE books SET rating = r.avg_rating FROM (SELECT book_id, ROUND(AVG(rating), 2) AS avg_rating FROM ratings GROUP BY book_id) AS r WHERE id = r.book_id").Error; err != nil {
+		if err := exec.Command("/usr/bin/python3.6", "pyscripts/recommendation.py").Run(); err != nil {
 			log.Error(err)
 		}
 
