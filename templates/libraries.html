@@ -1,15 +1,31 @@
-{{define "headers"}}{{end}}
-{{define "scripts"}}{{end}}
+{{define "headers"}}
+    <link rel="stylesheet" href="/static/css/ordered-list.css">
+    <script src="/static/libs/masonry.pkgd.min.js"></script>
+{{end}}
+{{define "scripts"}}
+    <script>
+        $('.entities').masonry({
+            itemSelector: '.entities-group'
+        });
+    </script>
+{{end}}
 {{define "content"}}
     <div class="shadow p-1">
         {{if .LibrariesErr}}
-            {{.LibrariesErr}}
+            No genres found.
         {{else}}
-            <ul>
-                {{range .Libraries}}
-                    <li><a href="/library/{{.Id}}">{{.Name}}</a></li>
+            <div class="entities">
+                {{range $rune, $libraries := .Order}}
+                    <div class="entities-group">
+                        {{printf "%c" $rune}}
+                        <ul class="entities-list">
+                            {{range $libraries}}
+                                <li><a href="/library/{{.Id}}">{{.Name}}</a></li>
+                            {{end}}
+                        </ul>
+                    </div>
                 {{end}}
-            </ul>
+            </div>
         {{end}}
     </div>
 {{end}}

@@ -29,7 +29,7 @@ func NewRouter() *mux.Router {
 	r.HandleFunc("/book/{id:[0-9]+}", bookHandler).Methods("GET")
 	r.HandleFunc("/author/{id:[0-9]+}", authorHandler).Methods("GET")
 	r.HandleFunc("/genre/{id:[0-9]+}", genreHandler).Methods("GET")
-	r.HandleFunc("/library/{id:[0-9]+}", LibraryHandler).Methods("GET")
+	r.HandleFunc("/library/{id:[0-9]+}", libraryHandler).Methods("GET")
 
 	r.HandleFunc("/search", searchHandler).Methods("GET")
 
