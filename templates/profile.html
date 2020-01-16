@@ -20,9 +20,9 @@
 
         <div class="status-list">
             <button class="status-btn active" data-group="1">Read</button>
-            <button class="status-btn" data-group="2">Will read</button>
+            <button class="status-btn" data-group="2">Plans</button>
             <button class="status-btn" data-group="3">Already read</button>
-            <button class="status-btn" data-group="4">Will not read</button>
+            <button class="status-btn" data-group="4">Don't like</button>
         </div>
 
         <div class="book-list">
@@ -48,6 +48,8 @@
                 <a href="/book/{{.Id}}"><img src="{{.Cover}}" alt="{{.Name}}"></a>
                 <div class="book-info text-center">
                     <a href="/book/{{.Id}}">{{.Name}}</a>
+                    <br>
+                    <small><span class="rating"><span>&#9733;</span> {{.Rating}}</span>  ({{.Year}})</small>
                 </div>
             </div>
         {{end}}

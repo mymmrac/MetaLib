@@ -1,4 +1,6 @@
-{{define "headers"}}{{end}}
+{{define "headers"}}
+    <link rel="stylesheet" href="/static/css/books.css">
+{{end}}
 {{define "scripts"}}{{end}}
 {{define "content"}}
     <div class="shadow p-1">
@@ -8,17 +10,22 @@
             {{with .Author}}
                 <h3>{{.Name}}</h3>
             {{end}}
-            <br>
             Book list:
-            <ol>
+            <br><br>
+            <div class="book-list">
                 {{range .Books}}
-                    <li>
-                        <a href="/book/{{.Id}}">{{.Name}}</a> ({{.Rating}})
-                    </li>
+                    <div class="book">
+                        <a href="/book/{{.Id}}"><img src="{{.Cover}}" alt="{{.Name}}"></a>
+                        <div class="book-info text-center">
+                            <a href="/book/{{.Id}}">{{.Name}}</a>
+                            <br>
+                            <small><span class="rating"><span>&#9733;</span> {{.Rating}}</span> ({{.Year}})</small>
+                        </div>
+                    </div>
                 {{else}}
                     No books yet.
                 {{end}}
-            </ol>
+            </div>
         {{end}}
     </div>
 {{end}}

@@ -1,7 +1,14 @@
 {{define "headers"}}
     <link rel="stylesheet" href="/static/css/ordered-list.css">
+    <script src="/static/libs/masonry.pkgd.min.js"></script>
 {{end}}
-{{define "scripts"}}{{end}}
+{{define "scripts"}}
+    <script>
+        $('.entities').masonry({
+            itemSelector: '.entities-group'
+        });
+    </script>
+{{end}}
 {{define "content"}}
     <div class="shadow p-1">
         {{if .AuthorsErr}}

@@ -77,6 +77,7 @@ func GetUser(session *sessions.Session) (*User, error) {
 			}
 		}
 	} else {
+		//session.Values["user"] = User{}  FIX
 		return nil, &UserError{"No user in session", EmptySession}
 	}
 	return user, nil

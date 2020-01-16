@@ -19,3 +19,9 @@
 .book .book-info {
     margin: 1rem 0;
 }
+
+.book .rating{
+    background: var(--green);
+    padding: 0 .1rem;
+    border-radius: 3px;
+}

@@ -80,6 +80,45 @@
 
 /* End */
 
+.comment-new textarea {
+    width: 100%;
+    resize: none;
+    border: none;
+    box-shadow: var(--shadow);
+    padding: .4rem;
+}
+
+.comment-new textarea:focus {
+    box-shadow: var(--shadow-active);
+}
+
+.comment-new button {
+    border: none;
+    background: #fff;
+    box-shadow: var(--shadow);
+    padding: .2rem .4rem;
+    margin-top: .5rem;
+}
+
+.comment-new button:hover {
+    box-shadow: var(--shadow-active);
+}
+
+.comment {
+    box-shadow: var(--shadow);
+    padding: .4rem;
+    margin-top: .5rem;
+}
+
+.comment-text {
+    margin: .3rem 0;
+    padding-left: .4rem;
+}
+
+.comment-date {
+    font-size: .85rem;
+}
+
 @media (max-width: 1120px) {
     .book-description {
         max-width: 400px;

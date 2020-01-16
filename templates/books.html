@@ -12,13 +12,20 @@
             </div>
         {{else}}
             <div class="book-list">
+                {{$uB := .UserBooks}}
                 {{range .Books}}
                     <div class="book">
                         <a href="/book/{{.Id}}"><img src="{{.Cover}}" alt="{{.Name}}"></a>
                         <div class="book-info text-center">
                             <a href="/book/{{.Id}}">{{.Name}}</a>
                             <br>
-                            <small>({{.Year}}) <a href="/author/{{.AuthorId}}">{{.Author.Name}}</a></small>
+                            <small><span class="rating"><span>&#9733;</span> {{.Rating}}</span>  ({{.Year}}) <a href="/author/{{.AuthorId}}">{{.Author.Name}}</a></small>
+                            {{$bId := .Id}}
+                            {{range $uB}}
+                                {{if eq .BookId $bId}}
+                                    {{.Status}} LLLLLL
+                                {{end}}
+                            {{end}}
                         </div>
                     </div>
                 {{else}}

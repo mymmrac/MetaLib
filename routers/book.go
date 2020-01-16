@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func bookHandler(w http.ResponseWriter, r *http.Request) {
@@ -51,6 +52,9 @@ func bookHandler(w http.ResponseWriter, r *http.Request) {
 		ratingStars[i] = 10 - i
 	}
 
+	var comments []models.Comment
+	utils.DB.Order("time desc").Where("book_id = ?", book.Id).Set("gorm:auto_preload", true).Find(&comments)
+
 	err = templmanager.RenderTemplate(w, r, "book.html", struct {
 		Book        *models.Book
 		BookErr     error
@@ -58,10 +62,43 @@ func bookHandler(w http.ResponseWriter, r *http.Request) {
 		UserRating  int
 		RatingStars []int
 		BookStatus  int
-	}{Book: book, BookErr: bookErr, IsUser: isUserLogged, UserRating: userRatingNumber, RatingStars: ratingStars, BookStatus: userBookStatus})
+		Comments []models.Comment
+	}{Book: book, BookErr: bookErr, IsUser: isUserLogged, UserRating: userRatingNumber, RatingStars: ratingStars, BookStatus: userBookStatus, Comments: comments})
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func commentHandler(w http.ResponseWriter, r *http.Request){
+	if err := utils.ParseForm(r); err != nil {
+		log.Error(err)
+		return
+	}
+
+	text, ok := utils.FormGetStr(r, "comment")
+	if !ok {
+		log.Error("Failed to get text")
+		return
+	}
+
+	vars := mux.Vars(r)
+	bookId, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		log.Error(err)
+	}
+
+	user, err := models.GetUserRW(r, w)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	comment := models.Comment{Text: text, Time: time.Now(), BookId:uint(bookId), UserId:user.Id}
+	if err := utils.DB.Create(&comment).Error; err != nil {
+		log.Error(err)
+	}
+
+	http.Redirect(w, r, "/book/" + strconv.FormatUint(bookId, 10), 302)
 }
 
 func booksHandler(w http.ResponseWriter, r *http.Request) {
@@ -106,9 +143,22 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 
 	var books []models.Book
 	offset := (page - 1) * perPage
-	notFind := utils.DB.Limit(perPage).Offset(offset).Set("gorm:auto_preload", true).Find(&books).RecordNotFound()
+	notFind := utils.DB.Order("rating desc, id").Offset(offset).Limit(perPage).Set("gorm:auto_preload", true).Find(&books).RecordNotFound()
 	if notFind {
 		booksErr = errors.New("books not found")
+	}
+
+	var userBooks []models.UserBook
+
+	user, err := models.GetUserRW(r, w)
+	if err != nil {
+		log.Error(err)
+	}else {
+		if user.Status == models.Logged {
+			if err := utils.DB.Where("user_id = ?", user.Id).Find(&userBooks).Error; err != nil {
+				log.Error(err)
+			}
+		}
 	}
 
 	var nextPage, previousPage int
@@ -131,7 +181,8 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 		NextPage     int
 		PreviousPage int
 		PageCount    int
-	}{Books: books, BooksErr: booksErr, Page: page, Pages: pagesSqn, NextPage: nextPage, PreviousPage: previousPage, PageCount: pages})
+		UserBooks    []models.UserBook
+	}{Books: books, BooksErr: booksErr, Page: page, Pages: pagesSqn, NextPage: nextPage, PreviousPage: previousPage, PageCount: pages, UserBooks: userBooks})
 	if err != nil {
 		log.Fatal(err)
 	}

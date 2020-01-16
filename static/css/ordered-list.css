@@ -4,12 +4,23 @@
 }
 
 .entities-group {
-    min-width: 240px;
-
+    width: 25%;
 }
 
-.entities {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+@media (max-width: 900px) {
+    .entities-group {
+        width: 33%;
+    }
+}
+
+@media (max-width: 720px) {
+    .entities-group {
+        width: 50%;
+    }
+}
+
+@media (max-width: 450px) {
+    .entities-group {
+        width: 100%;
+    }
 }

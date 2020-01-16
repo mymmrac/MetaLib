@@ -31,7 +31,8 @@
                     status = $(this).data("status");
                 }
 
-                {{if .IsUser}}
+                {{if not .BookErr}}
+                {{if.IsUser}}
                 $.ajax({
                     type: "POST",
                     url: "/func/setStatus",
@@ -40,6 +41,7 @@
                         console.log("Status set")
                     }
                 });
+                {{end}}
                 {{end}}
             });
         });
@@ -83,13 +85,13 @@
                                         class="book-status-btn{{if eq $bs 1}} active{{end}}">Read
                                 </button>
                                 <button type="button" data-status="2"
-                                        class="book-status-btn{{if eq $bs 2}} active{{end}}">Will read
+                                        class="book-status-btn{{if eq $bs 2}} active{{end}}">Plans
                                 </button>
                                 <button type="button" data-status="3"
                                         class="book-status-btn{{if eq $bs 3}} active{{end}}">Already read
                                 </button>
                                 <button type="button" data-status="4"
-                                        class="book-status-btn{{if eq $bs 4}} active{{end}}">Will not read
+                                        class="book-status-btn{{if eq $bs 4}} active{{end}}">Don't like
                                 </button>
                             </div>
                         {{end}}
@@ -102,6 +104,25 @@
                     <img src="{{.Cover}}" alt="{{.Name}}" class="book-cover">
                 </div>
             {{end}}
+            <div class="comments">
+                <h4>Comments</h4>
+                {{if .IsUser}}
+                    <form action="" method="POST" class="comment-new">
+                        <textarea name="comment" rows="2"></textarea>
+                        <input type="hidden" name="book-id" value="{{.Book.Id}}">
+                        <button type="submit">Send</button>
+                    </form>
+                {{end}}
+                {{range .Comments}}
+                    <div class="comment">
+                        <div class="comment-info">
+                            {{.User.Username}}
+                            <span class="comment-date">{{.Time.Format "15:04 Jan 02, 2006"}}</span>
+                        </div>
+                        <p class="comment-text">{{.Text}}</p>
+                    </div>
+                {{end}}
+            </div>
         {{end}}
     </div>
 {{end}}

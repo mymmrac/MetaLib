@@ -34,6 +34,7 @@ func NewRouter() *mux.Router {
 	r.HandleFunc("/search", searchHandler).Methods("GET")
 
 	r.HandleFunc("/func/star", starHandler).Methods("POST")
+	r.HandleFunc("/book/{id:[0-9]+}", commentHandler).Methods("POST")
 	r.HandleFunc("/func/setStatus", setStatusHandler).Methods("POST")
 
 	r.NotFoundHandler = http.HandlerFunc(NotFoundHandler)

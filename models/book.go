@@ -3,6 +3,7 @@ package models
 import (
 	"MetaLib/utils"
 	"errors"
+	"time"
 )
 
 type Book struct {
@@ -27,6 +28,16 @@ const (
 	AlreadyRead
 	WillNotRead
 )
+
+type Comment struct {
+	Id uint
+	Text string
+	Time time.Time
+	BookId uint
+	Book Book
+	UserId uint
+	User User
+}
 
 func GetBookById(id uint) (*Book, error) {
 	var book Book
