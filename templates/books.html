@@ -19,7 +19,8 @@
                         <div class="book-info text-center">
                             <a href="/book/{{.Id}}">{{.Name}}</a>
                             <br>
-                            <small><span class="rating"><span>&#9733;</span> {{.Rating}}</span>  ({{.Year}}) <a href="/author/{{.AuthorId}}">{{.Author.Name}}</a></small>
+                            <small><span class="rating"><span>&#9733;</span> {{.Rating}}</span> ({{.Year}}) <a
+                                        href="/author/{{.AuthorId}}">{{.Author.Name}}</a></small>
                             {{$bId := .Id}}
                             {{range $uB}}
                                 {{if eq .BookId $bId}}

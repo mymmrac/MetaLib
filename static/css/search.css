@@ -4,11 +4,18 @@
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 
-.filter-in-btn {
+.filter-in-btn, .desc-input {
     border: none;
     background: #fff;
     box-shadow: var(--shadow);
     height: 34px;
+}
+
+.desc-input {
+    width: 100%;
+    padding-left: .5rem;
+    padding-right: .5rem;
+    margin-top: .4rem;
 }
 
 .filter-in-btn:hover {

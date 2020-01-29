@@ -10,10 +10,7 @@ import (
 func NewRouter() *mux.Router {
 	r := mux.NewRouter()
 
-	//r.HandleFunc("/", indexGetHandler).Methods("GET")
 	r.HandleFunc("/", booksHandler).Methods("GET")
-
-	//r.HandleFunc("/about", aboutHandler).Methods("GET")
 
 	r.HandleFunc("/profile", profileHandler).Methods("GET")
 	r.HandleFunc("/register", registerGetHandler).Methods("GET")
@@ -21,7 +18,6 @@ func NewRouter() *mux.Router {
 	r.HandleFunc("/func/auth", authHandler).Methods("POST")
 	r.HandleFunc("/logout", logoutHandler).Methods("GET")
 
-	//r.HandleFunc("/books", booksHandler).Methods("GET")
 	r.HandleFunc("/authors", authorsHandler).Methods("GET")
 	r.HandleFunc("/genres", genresHandler).Methods("GET")
 	r.HandleFunc("/libraries", librariesHandler).Methods("GET")
@@ -44,20 +40,6 @@ func NewRouter() *mux.Router {
 
 	return r
 }
-
-//func indexGetHandler(w http.ResponseWriter, r *http.Request) {
-//	err := templmanager.RenderTemplate(w, r, "index.html", nil)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//}
-
-//func aboutHandler(w http.ResponseWriter, r *http.Request) {
-//	err := templmanager.RenderTemplate(w, r, "about.html", nil)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//}
 
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	err := templmanager.RenderTemplate(w, r, "404.html", nil)

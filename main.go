@@ -46,7 +46,7 @@ func main() {
 	http.Handle("/", r)
 
 	c := cron.New()
-	_, err = c.AddFunc("@every 30m", func() { // FIX time in production
+	_, err = c.AddFunc("@every 1h", func() {
 		if err := utils.DB.Exec("UPDATE books SET rating = r.avg_rating FROM (SELECT book_id, ROUND(AVG(rating), 2) AS avg_rating FROM ratings GROUP BY book_id) AS r WHERE id = r.book_id").Error; err != nil {
 			log.Error(err)
 		}

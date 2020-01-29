@@ -41,7 +41,7 @@ def find_n_neighbours(df, n):
     return df
 
 
-user_count = ratings.user_id.nunique()
+user_count = (ratings.user_id.nunique(), 30)[ratings.user_id.nunique() > 30]
 sim_user_u = find_n_neighbours(similarity_with_user, user_count)
 sim_user_m = find_n_neighbours(similarity_with_book, user_count)
 

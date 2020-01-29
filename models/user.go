@@ -68,7 +68,6 @@ func GetUser(session *sessions.Session) (*User, error) {
 	if ok {
 		user, ok = userVal.(*User)
 		if !ok {
-			session.Values["user"] = User{}
 			return nil, &UserError{"Convert to user failed", ConvertFailed}
 		}
 		if user.Status != NoLogin && user.Status != Registration {
@@ -77,7 +76,6 @@ func GetUser(session *sessions.Session) (*User, error) {
 			}
 		}
 	} else {
-		//session.Values["user"] = User{}  FIX
 		return nil, &UserError{"No user in session", EmptySession}
 	}
 	return user, nil
@@ -88,13 +86,28 @@ func GetUserRW(r *http.Request, w http.ResponseWriter) (*User, error) {
 
 	user, err := GetUser(session)
 	if err != nil {
-		return nil, err
+		userErr, ok := err.(*UserError)
+		if !ok {
+			return nil, err
+		} else {
+			if userErr.Code() == EmptySession {
+				session.Values["user"] = User{}
+
+				if err := session.Save(r, w); err != nil {
+					return nil, err
+				} else {
+					return &User{}, nil
+				}
+			} else {
+				return nil, userErr
+			}
+		}
 	}
 	if user == nil {
 		return nil, &UserError{"User is nil", UserNil}
 	}
 	if user.Status != Logged {
-		return nil, &UserError{"User not logged", UserNotLogged}
+		return user, &UserError{"User not logged", UserNotLogged}
 	}
 	return user, nil
 }

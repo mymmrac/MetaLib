@@ -30,13 +30,13 @@ const (
 )
 
 type Comment struct {
-	Id uint
-	Text string
-	Time time.Time
+	Id     uint
+	Text   string
+	Time   time.Time
 	BookId uint
-	Book Book
+	Book   Book
 	UserId uint
-	User User
+	User   User
 }
 
 func GetBookById(id uint) (*Book, error) {

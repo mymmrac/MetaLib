@@ -31,7 +31,6 @@
                 {{if eq .User.Status 1}}
                     <a href="/profile">
                         {{.User.Username}}
-                        {{/*                            <a href="#" onclick="signOut()">Logout</a>*/}}
                     </a>
                 {{else}}
                     <a href="#sign-in" id="login-btn" class="login-btn">
@@ -58,6 +57,7 @@
         <input type="hidden" name="g">
         <input type="hidden" name="a">
         <input type="hidden" name="y">
+        <input type="hidden" name="oqd">
     </form>
 
     <script>
@@ -98,6 +98,14 @@
     <div class="content container">
         {{template "content" .Data}}
     </div>
+
+    <footer class="container mb-1">
+        <div class="p-1 shadow text-center">
+            Our contacts: <a href="mailto:28.swich@gmail.com">28.swich@gmail.com</a>
+            <br>
+            <span>&#169;</span> 2019-2020 MetaLib
+        </div>
+    </footer>
 
     <script>
         function onSignIn(user) {
@@ -167,6 +175,9 @@
 
             if (getParams.has("oq")) {
                 $("input[name=oq]").val(getParams.get("oq"))
+            }
+            if (getParams.has("oqd")) {
+                $("input[name=oqd]").val(getParams.get("oqd"))
             }
             if (getParams.has("g")) {
                 $("input[name=g]").val(getParams.get("g"))

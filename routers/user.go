@@ -47,7 +47,8 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	session := utils.GetSession(r, w)
 
-	session.Options.MaxAge = -1
+	//session.Options.MaxAge = -1
+	session.Values["user"] = models.User{}
 	err := session.Save(r, w)
 	if err != nil {
 		log.Fatal(err)

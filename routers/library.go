@@ -51,9 +51,8 @@ func librariesHandler(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-
 	err := templmanager.RenderTemplate(w, r, "libraries.html", struct {
-		Order     map[rune][]models.Library
+		Order        map[rune][]models.Library
 		LibrariesErr error
 	}{Order: order, LibrariesErr: librariesErr})
 	if err != nil {

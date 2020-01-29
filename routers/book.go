@@ -62,14 +62,14 @@ func bookHandler(w http.ResponseWriter, r *http.Request) {
 		UserRating  int
 		RatingStars []int
 		BookStatus  int
-		Comments []models.Comment
+		Comments    []models.Comment
 	}{Book: book, BookErr: bookErr, IsUser: isUserLogged, UserRating: userRatingNumber, RatingStars: ratingStars, BookStatus: userBookStatus, Comments: comments})
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func commentHandler(w http.ResponseWriter, r *http.Request){
+func commentHandler(w http.ResponseWriter, r *http.Request) {
 	if err := utils.ParseForm(r); err != nil {
 		log.Error(err)
 		return
@@ -93,12 +93,12 @@ func commentHandler(w http.ResponseWriter, r *http.Request){
 		return
 	}
 
-	comment := models.Comment{Text: text, Time: time.Now(), BookId:uint(bookId), UserId:user.Id}
+	comment := models.Comment{Text: text, Time: time.Now(), BookId: uint(bookId), UserId: user.Id}
 	if err := utils.DB.Create(&comment).Error; err != nil {
 		log.Error(err)
 	}
 
-	http.Redirect(w, r, "/book/" + strconv.FormatUint(bookId, 10), 302)
+	http.Redirect(w, r, "/book/"+strconv.FormatUint(bookId, 10), 302)
 }
 
 func booksHandler(w http.ResponseWriter, r *http.Request) {
@@ -151,9 +151,9 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 	var userBooks []models.UserBook
 
 	user, err := models.GetUserRW(r, w)
-	if err != nil {
+	if user == nil {
 		log.Error(err)
-	}else {
+	} else {
 		if user.Status == models.Logged {
 			if err := utils.DB.Where("user_id = ?", user.Id).Find(&userBooks).Error; err != nil {
 				log.Error(err)

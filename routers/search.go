@@ -25,6 +25,8 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	author := r.FormValue("a")
 	year_ := r.FormValue("y")
 
+	description := r.FormValue("oqd")
+
 	var genreId, authorId, year uint64
 	if genre != "" {
 		genreId, err = strconv.ParseUint(genre, 10, 32)
@@ -68,41 +70,49 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		where += "to_tsvector(name) @@ to_tsquery('" + strings.ReplaceAll(query, " ", "+") + ":*')"
 	}
 
+	if description != "" {
+		if where != "" {
+			where += " AND "
+		}
+		where += "to_tsvector(description) @@ to_tsquery('" + strings.ReplaceAll(description, " ", "+") + ":*')"
+	}
+
 	if genreId != 0 {
 		if where != "" {
-			where += " AND"
+			where += " AND "
 		}
-		where += fmt.Sprintf(" genre_id = %v", genreId)
+		where += fmt.Sprintf("genre_id = %v", genreId)
 	}
 	if authorId != 0 {
 		if where != "" {
-			where += " AND"
+			where += " AND "
 		}
-		where += fmt.Sprintf(" author_id = %v", authorId)
+		where += fmt.Sprintf("author_id = %v", authorId)
 	}
 	if year != 0 {
 		if where != "" {
-			where += " AND"
+			where += " AND "
 		}
-		where += fmt.Sprintf(" year = %v", year)
+		where += fmt.Sprintf("year = %v", year)
 	}
 
 	if where != "" {
-		if err := utils.DB.Raw("SELECT * FROM books WHERE " + where).Scan(&books).Error; err != nil {
+		if err := utils.DB.Raw("SELECT * FROM books WHERE " + where + " LIMIT 30").Scan(&books).Error; err != nil {
 			log.Error(err)
 		}
 	}
 
 	err = templmanager.RenderTemplate(w, r, "search.html", struct {
-		SearchFor    string
-		FilterGenre  uint64
-		FilterAuthor uint64
-		FilterYear   uint64
-		Books        []models.Book
-		GenreList    []models.Genre
-		AuthorList   []models.Author
-		YearList     []uint
-	}{SearchFor: query, Books: books, GenreList: genreList, AuthorList: authorList, YearList: yearList, FilterGenre: genreId, FilterAuthor: authorId, FilterYear: year})
+		SearchFor         string
+		SearchDescription string
+		FilterGenre       uint64
+		FilterAuthor      uint64
+		FilterYear        uint64
+		Books             []models.Book
+		GenreList         []models.Genre
+		AuthorList        []models.Author
+		YearList          []uint
+	}{SearchFor: query, SearchDescription: description, Books: books, GenreList: genreList, AuthorList: authorList, YearList: yearList, FilterGenre: genreId, FilterAuthor: authorId, FilterYear: year})
 	if err != nil {
 		log.Fatal(err)
 	}

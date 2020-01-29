@@ -84,15 +84,12 @@ func LoadTemplates() (err error) {
 func RenderTemplate(w http.ResponseWriter, r *http.Request, name string, data interface{}) error {
 	session := utils.GetSession(r, w)
 
-	user, err := models.GetUser(session)
+	if session.IsNew {
+		session.Values["user"] = models.User{}
+	}
+
+	user, err := models.GetUserRW(r, w)
 	if err != nil {
-		userErr, ok := err.(*models.UserError)
-		if !ok {
-			log.Fatal("Convert error to UserError failed")
-		}
-		if userErr.Code() != models.EmptySession {
-			log.Error(err)
-		}
 		user = &models.User{}
 	}
 
@@ -143,6 +140,10 @@ LIMIT ?`, uId, uId, staelNeed).Scan(&rb)
 
 	err = tmpl.Execute(w, ctxData)
 	if err != nil {
+		return err
+	}
+
+	if err:= session.Save(r, w); err != nil{
 		return err
 	}
 
