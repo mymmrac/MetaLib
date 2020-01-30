@@ -17,6 +17,14 @@ type Library struct {
 	City   City
 }
 
+type LibraryBooks struct {
+	Id        uint
+	BookID    uint
+	Book      Book
+	LibraryId uint
+	Library   Library
+}
+
 func GetLibraryById(id uint) (*Library, error) {
 	var library Library
 	notExist := utils.DB.Set("gorm:auto_preload", true).First(&library, id).RecordNotFound()

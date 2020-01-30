@@ -1,15 +1,41 @@
-{{define "headers"}}{{end}}
-{{define "scripts"}}{{end}}
+{{define "headers"}}
+    <link rel="stylesheet" href="/static/css/library.css">
+{{end}}
+{{define "scripts"}}
+    <script>
+        $(document).ready(function () {
+            $("#book-search").on('keyup', function () {
+                let q = $(this).val();
+                $(".book-list li").hide();
+                $(".book-list li a").filter(function () {
+                    return $(this).text().toLowerCase().indexOf(q.toLowerCase()) >= 0;
+                }).parent().show();
+            });
+        });
+    </script>
+{{end}}
 {{define "content"}}
     <div class="shadow p-1">
         {{if .LibraryErr}}
             {{.LibraryErr}}
         {{else}}
             {{with .Library}}
-                Name: {{.Name}}
-                <br>
-                City: {{.City.Name}}
+                <h3>{{.Name}}</h3>
+                Location: {{.City.Name}}
             {{end}}
+            <input type="text" id="book-search" placeholder="Search...">
+            Books:
+            <ul class="book-list">
+                {{range .LibraryBooks}}
+                    {{with .Book}}
+                        <li>
+                            <a href="/book/{{.Id}}">{{.Name}}</a>
+                        </li>
+                    {{end}}
+                {{else}}
+                    No books yet.
+                {{end}}
+            </ul>
         {{end}}
     </div>
 {{end}}

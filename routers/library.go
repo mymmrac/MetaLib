@@ -21,10 +21,19 @@ func libraryHandler(w http.ResponseWriter, r *http.Request) {
 
 	library, libraryErr := models.GetLibraryById(uint(libraryId))
 
+	var libraryBooks []models.LibraryBooks
+	if libraryErr == nil {
+		err = utils.DB.Where("library_id = ?", library.Id).Preload("Book").Find(&libraryBooks).Error
+		if err != nil {
+			log.Error(err)
+		}
+	}
+
 	err = templmanager.RenderTemplate(w, r, "library.html", struct {
-		Library    *models.Library
-		LibraryErr error
-	}{Library: library, LibraryErr: libraryErr})
+		Library      *models.Library
+		LibraryBooks []models.LibraryBooks
+		LibraryErr   error
+	}{Library: library, LibraryBooks: libraryBooks, LibraryErr: libraryErr})
 	if err != nil {
 		log.Fatal(err)
 	}
