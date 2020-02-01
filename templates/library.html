@@ -25,11 +25,15 @@
             {{end}}
             <input type="text" id="book-search" placeholder="Search...">
             Books:
+            <div class="hint">Red underline means that someone take this book and it is no in library now.</div>
             <ul class="book-list">
+                {{$ubh := .UserBooksHistory}}
                 {{range .LibraryBooks}}
                     {{with .Book}}
+                        {{$bid := .Id}}
                         <li>
-                            <a href="/book/{{.Id}}">{{.Name}}</a>
+                            <a{{range $ubh}}{{if eq .BookId $bid}} class="miss"{{end}}{{end}}
+                                    href="/book/{{.Id}}">{{.Name}}</a>
                         </li>
                     {{end}}
                 {{else}}

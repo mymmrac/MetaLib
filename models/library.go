@@ -3,6 +3,7 @@ package models
 import (
 	"MetaLib/utils"
 	"errors"
+	"time"
 )
 
 type City struct {
@@ -23,6 +24,22 @@ type LibraryBooks struct {
 	Book      Book
 	LibraryId uint
 	Library   Library
+}
+
+type UserBooksHistory struct {
+	Id        uint
+	UserId    uint
+	User      User
+	BookId    uint
+	Book      Book
+	LibraryId uint
+	Library   Library
+	GetTime   time.Time
+	BackTime  *time.Time
+}
+
+func (UserBooksHistory) TableName() string {
+	return "user_books_history"
 }
 
 func GetLibraryById(id uint) (*Library, error) {

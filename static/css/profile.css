@@ -52,3 +52,31 @@
 .status-list {
     margin-bottom: 0.4rem;
 }
+
+.book-history {
+    margin-left: 2rem;
+}
+
+.book-history-group.active {
+    display: block !important;
+}
+
+.book-history-table {
+    box-shadow: var(--shadow);
+    padding: .2rem;
+    width: 100%;
+}
+
+.book-history-table th, .book-history-table td {
+    padding: .2rem;
+    border-bottom: 1px solid var(--dark);
+    text-align: center;
+}
+
+.book-history-table td span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}

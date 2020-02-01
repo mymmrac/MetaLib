@@ -3,7 +3,9 @@
     --dark: #333333;
     --red: #ff6766;
     --gray: #e2e2e2;
-    --blue: #6d62ff;
+    /*--blue: #6d62ff;*/
+    --blue: #6284ff;
+    --dark-gray : #7f7f7f;
 
     --black: #212121;
     --shadow: 0 2px 4px 0 rgba(0, 0, 0, .25);
@@ -58,8 +60,17 @@ a:hover {
     margin-bottom: 1rem;
 }
 
+.ml-1 {
+    margin-left: 1rem;
+}
+
 .hidden {
     display: none !important;
+}
+
+.hint {
+    color: var(--dark-gray);
+    font-size: .8rem;
 }
 
 /* Header */

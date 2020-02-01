@@ -30,6 +30,11 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 		WillNotRead []models.UserBook
 	}{read, willRead, alreadyRead, willNotRead}
 
+	var userBooksHistory []models.UserBooksHistory
+	if err = utils.DB.Where("user_id = ?", user.Id).Set("gorm:auto_preload", true).Find(&userBooksHistory).Error; err != nil {
+		log.Error(err)
+	}
+
 	err = templmanager.RenderTemplate(w, r, "profile.html", struct {
 		User  models.User
 		Books struct {
@@ -38,7 +43,8 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 			AlreadyRead []models.UserBook
 			WillNotRead []models.UserBook
 		}
-	}{User: *user, Books: books})
+		UserBooksHistory []models.UserBooksHistory
+	}{User: *user, Books: books, UserBooksHistory: userBooksHistory})
 	if err != nil {
 		log.Fatal(err)
 	}

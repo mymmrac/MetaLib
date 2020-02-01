@@ -28,6 +28,11 @@
     -webkit-line-clamp: 1;
 }
 
+.miss {
+    text-decoration: underline;
+    text-decoration-color: var(--red);
+}
+
 @media (max-width: 900px) {
     .book-list {
         column-count: 3;

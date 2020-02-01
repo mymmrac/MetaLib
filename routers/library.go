@@ -22,18 +22,24 @@ func libraryHandler(w http.ResponseWriter, r *http.Request) {
 	library, libraryErr := models.GetLibraryById(uint(libraryId))
 
 	var libraryBooks []models.LibraryBooks
+	var userBookHistory [] models.UserBooksHistory
 	if libraryErr == nil {
 		err = utils.DB.Where("library_id = ?", library.Id).Preload("Book").Find(&libraryBooks).Error
+		if err != nil {
+			log.Error(err)
+		}
+		err = utils.DB.Where("library_id = ? AND back_time IS NULL", library.Id).Find(&userBookHistory).Error
 		if err != nil {
 			log.Error(err)
 		}
 	}
 
 	err = templmanager.RenderTemplate(w, r, "library.html", struct {
-		Library      *models.Library
-		LibraryBooks []models.LibraryBooks
-		LibraryErr   error
-	}{Library: library, LibraryBooks: libraryBooks, LibraryErr: libraryErr})
+		Library         *models.Library
+		LibraryBooks    []models.LibraryBooks
+		UserBooksHistory []models.UserBooksHistory
+		LibraryErr      error
+	}{Library: library, LibraryBooks: libraryBooks, UserBooksHistory: userBookHistory, LibraryErr: libraryErr})
 	if err != nil {
 		log.Fatal(err)
 	}

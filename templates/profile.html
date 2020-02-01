@@ -23,6 +23,7 @@
             <button class="status-btn" data-group="2">Plans</button>
             <button class="status-btn" data-group="3">Already read</button>
             <button class="status-btn" data-group="4">Don't like</button>
+            <button class="status-btn book-history" data-group="5">Book History</button>
         </div>
 
         <div class="book-list">
@@ -37,6 +38,29 @@
             </div>
             <div class="book-group" id="g4">
                 {{template "book-group" .Books.WillNotRead}}
+            </div>
+
+            <div class="book-group book-history-group" id="g5">
+                <table class="book-history-table">
+                    <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Library</th>
+                        <th>Get Date</th>
+                        <th>Back Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{range .UserBooksHistory}}
+                        <tr>
+                            <td><span><a href="/book/{{.Book.Id}}">{{.Book.Name}}</a></span></td>
+                            <td><span><a href="/library/{{.Library.Id}}">{{.Library.Name}}</a></span></td>
+                            <td><span>{{.GetTime.Format "Jan 02, 2006"}}</span></td>
+                            <td><span>{{if .BackTime}}{{.BackTime.Format "Jan 02, 2006"}}{{else}}-{{end}}</span></td>
+                        </tr>
+                    {{end}}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
