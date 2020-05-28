@@ -1,4 +1,2 @@
 # MetaLib
-MetaLib website
-
-metalib.herokuapp.com
+[MetaLib](http://metalib.herokuapp.com/) website
