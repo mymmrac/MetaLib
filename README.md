@@ -1,2 +1,2 @@
 # MetaLib
-[MetaLib](http://metalib.herokuapp.com/) website
+[MetaLib website](http://metalib.herokuapp.com/)
