@@ -16,6 +16,36 @@
     height: 280px;
 }
 
+.book .book-cover {
+    position: relative;
+}
+
+.book .book-cover .book-status {
+    position: absolute;
+    width: 100%;
+    padding: .2rem;
+    bottom: 0;
+    color: #fff;
+    text-align: center;
+    font-size: .9rem;
+}
+
+.book .book-status-1 {
+    background: var(--red);
+}
+
+.book .book-status-2 {
+    background: var(--blue);
+}
+
+.book .book-status-3 {
+    background: var(--green);
+}
+
+.book .book-status-4 {
+    background: var(--dark-gray);
+}
+
 .book .book-info {
     margin: 1rem 0;
 }

@@ -6,7 +6,7 @@ import (
 	"MetaLib/templmanager"
 	"MetaLib/utils"
 	"encoding/gob"
-	"github.com/mymmrac/logrus-formatter"
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/robfig/cron/v3"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -15,12 +15,7 @@ import (
 )
 
 func init() {
-	log.SetFormatter(&LogrusFormatter.Formatter{
-		TimestampFormat: "2006-01-02 15:04:05",
-		LogFormat:       "[%lvl%]: %time% %file%:%line% %func% - %msg%\n",
-	})
-
-	log.SetReportCaller(true)
+	utils.InitFormatter()
 
 	gob.Register(&models.User{})
 }

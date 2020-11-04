@@ -15,18 +15,32 @@
                 {{$uB := .UserBooks}}
                 {{range .Books}}
                     <div class="book">
-                        <a href="/book/{{.Id}}"><img src="{{.Cover}}" alt="{{.Name}}"></a>
+                        <div class="book-cover">
+                            <a href="/book/{{.Id}}"><img src="{{.Cover}}" alt="{{.Name}}"></a>
+                            {{$bId := .Id}}
+                            {{range $uB}}
+                                {{if eq .BookId $bId}}
+                                    <div class="book-status book-status-{{ .Status }}">
+                                        {{if eq .Status 1}}
+                                            Reading
+                                        {{else if eq .Status 2}}
+                                            Plans
+                                        {{else if eq .Status 3}}
+                                            Already read
+                                        {{else if eq .Status 4}}
+                                            Don't like
+                                        {{else}}
+                                            Unknown
+                                        {{end}}
+                                    </div>
+                                {{end}}
+                            {{end}}
+                        </div>
                         <div class="book-info text-center">
                             <a href="/book/{{.Id}}">{{.Name}}</a>
                             <br>
                             <small><span class="rating"><span>&#9733;</span> {{.Rating}}</span> ({{.Year}}) <a
                                         href="/author/{{.AuthorId}}">{{.Author.Name}}</a></small>
-                            {{$bId := .Id}}
-                            {{range $uB}}
-                                {{if eq .BookId $bId}}
-                                    {{.Status}} LLLLLL
-                                {{end}}
-                            {{end}}
                         </div>
                     </div>
                 {{else}}
