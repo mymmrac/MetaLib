@@ -4,15 +4,17 @@
 {{end}}
 {{define "scripts"}}
     <script>
-        $('.entities').masonry({
-            itemSelector: '.entities-group'
+        $(document).ready(function (){
+            $('.entities').masonry({
+                itemSelector: '.entities-group'
+            });
         });
     </script>
 {{end}}
 {{define "content"}}
     <div class="shadow p-1">
         {{if .LibrariesErr}}
-            No genres found.
+            No libraries found.
         {{else}}
             <div class="entities">
                 {{range $rune, $libraries := .Order}}

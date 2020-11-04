@@ -1,9 +1,15 @@
 {{define "headers"}}
     <link rel="stylesheet" href="/static/css/book.css">
+    <link rel="stylesheet" href="/static/css/ordered-list.css">
+    <script src="/static/libs/masonry.pkgd.min.js"></script>
 {{end}}
 {{define "scripts"}}
     <script>
         $(document).ready(function () {
+            $('.entities').masonry({
+                itemSelector: '.entities-group'
+            });
+
             $(".star-inp").on("change", function () {
                 if ($(this).val()) {
                     $.ajax({
@@ -56,6 +62,7 @@
             {{$rs := .RatingStars}}
             {{$isUser := .IsUser}}
             {{$bs := .BookStatus}}
+
             {{with .Book}}
                 <div class="book">
                     <div class="book-info">
@@ -82,7 +89,7 @@
                         {{if $isUser}}
                             <div class="user-book-status">
                                 <button type="button" data-status="1"
-                                        class="book-status-btn{{if eq $bs 1}} active{{end}}">Read
+                                        class="book-status-btn{{if eq $bs 1}} active{{end}}">Reading
                                 </button>
                                 <button type="button" data-status="2"
                                         class="book-status-btn{{if eq $bs 2}} active{{end}}">Plans
@@ -104,6 +111,27 @@
                     <img src="{{.Cover}}" alt="{{.Name}}" class="book-cover">
                 </div>
             {{end}}
+
+            <div class="libraries">
+                <h4>Libraries</h4>
+                {{if .LibrariesErr}}
+                    No libraries found.
+                {{else}}
+                    <div class="entities">
+                        {{range $rune, $libraries := .LibrariesOrder}}
+                            <div class="entities-group">
+                                {{printf "%c" $rune}}
+                                <ul class="entities-list">
+                                    {{range $libraries}}
+                                        <li><a href="/library/{{.Id}}">{{.Name}}</a></li>
+                                    {{end}}
+                                </ul>
+                            </div>
+                        {{end}}
+                    </div>
+                {{end}}
+            </div>
+
             <div class="comments">
                 <h4>Comments</h4>
                 {{if .IsUser}}

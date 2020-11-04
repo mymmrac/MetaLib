@@ -80,6 +80,10 @@
 
 /* End */
 
+.comment-new {
+    margin-bottom: .6rem;
+}
+
 .comment-new textarea {
     width: 100%;
     resize: none;

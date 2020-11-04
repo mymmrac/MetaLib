@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -20,6 +21,26 @@ func bookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	book, bookErr := models.GetBookById(uint(bookId))
+
+	var librariesErr error
+
+	var libraries []models.Library
+	notFound := utils.DB.Joins("left join library_books on libraries.id = library_books.library_id").Where("book_id = ?", book.Id).Find(&libraries).RecordNotFound()
+	if notFound {
+		librariesErr = errors.New("libraries not found")
+	}
+
+	order := make(map[rune][]models.Library)
+	for _, library := range libraries {
+		firstRune := (rune)(library.Name[0])
+		order[firstRune] = append(order[firstRune], library)
+	}
+
+	for _, a := range order {
+		sort.Slice(a[:], func(i, j int) bool {
+			return a[i].Name < a[j].Name
+		})
+	}
 
 	var userRatingNumber int
 	var userBookStatus int
@@ -56,14 +77,16 @@ func bookHandler(w http.ResponseWriter, r *http.Request) {
 	utils.DB.Order("time desc").Where("book_id = ?", book.Id).Set("gorm:auto_preload", true).Find(&comments)
 
 	err = templmanager.RenderTemplate(w, r, "book.html", struct {
-		Book        *models.Book
-		BookErr     error
-		IsUser      bool
-		UserRating  int
-		RatingStars []int
-		BookStatus  int
-		Comments    []models.Comment
-	}{Book: book, BookErr: bookErr, IsUser: isUserLogged, UserRating: userRatingNumber, RatingStars: ratingStars, BookStatus: userBookStatus, Comments: comments})
+		Book           *models.Book
+		BookErr        error
+		IsUser         bool
+		UserRating     int
+		RatingStars    []int
+		BookStatus     int
+		Comments       []models.Comment
+		LibrariesOrder map[rune][]models.Library
+		LibrariesErr   error
+	}{Book: book, BookErr: bookErr, IsUser: isUserLogged, UserRating: userRatingNumber, RatingStars: ratingStars, BookStatus: userBookStatus, Comments: comments, LibrariesOrder: order, LibrariesErr: librariesErr})
 	if err != nil {
 		log.Fatal(err)
 	}
