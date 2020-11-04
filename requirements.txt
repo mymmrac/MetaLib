@@ -1,0 +1,7 @@
+numpy
+pandas
+dotenv
+sklearn.metrics.pairwise
+sqlalchemy
+builtins
+os
