@@ -3,11 +3,11 @@ from builtins import range
 import numpy as np
 import os
 import pandas as pd
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from sklearn.metrics.pairwise import cosine_similarity
 from sqlalchemy import create_engine
 
-load_dotenv()
+# load_dotenv()
 
 engine = create_engine("postgresql://%s:%s@%s:%s/%s" % (
     os.getenv("DB_USER"), os.getenv("DB_PASS"), os.getenv("DB_HOST"), os.getenv("DB_PORT"), os.getenv("DB_NAME")))
