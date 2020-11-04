@@ -1,6 +1,5 @@
 numpy
 pandas
-sklearn.metrics.pairwise
+sklearn
 sqlalchemy
 builtins
-os
