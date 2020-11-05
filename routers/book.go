@@ -22,6 +22,12 @@ func bookHandler(w http.ResponseWriter, r *http.Request) {
 
 	book, bookErr := models.GetBookById(uint(bookId))
 
+	if bookErr != nil {
+		w.WriteHeader(http.StatusNotFound)
+		NotFoundHandler(w, r)
+		return
+	}
+
 	var librariesErr error
 
 	var libraries []models.Library
